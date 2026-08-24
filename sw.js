@@ -1,4 +1,4 @@
-const CACHE_NAME = 'counter-burraco-v1.2.2';
+const CACHE_NAME = 'counter-burraco-v1.3.0';
 
 const APP_SHELL = [
   './',
