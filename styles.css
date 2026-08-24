@@ -1296,3 +1296,44 @@ input:focus-visible {
   border-bottom-left-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
+
+
+/* =========================================================
+   FINAL LOWER FULL-BLEED — keep page fixed
+   ========================================================= */
+
+/* Remove only the lower black gutter. */
+body {
+  padding-bottom: 0 !important;
+}
+
+/* Extend the fixed app window through the iPhone lower safe area.
+   Top geometry stays unchanged; lower corners become square. */
+.app {
+  height: calc(100dvh - var(--safe-top) - 12px) !important;
+  min-height: calc(100dvh - var(--safe-top) - 12px) !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+/* Slightly lower the secondary action without changing its size/style. */
+.new-game {
+  transform: translateY(6px);
+}
+
+/* Match the existing smaller top gap on compact iPhones. */
+@media (max-width: 390px) {
+  .app {
+    height: calc(100dvh - var(--safe-top) - 10px) !important;
+    min-height: calc(100dvh - var(--safe-top) - 10px) !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+}
+
+@media (max-width: 350px) {
+  .app {
+    height: calc(100dvh - var(--safe-top) - 8px) !important;
+    min-height: calc(100dvh - var(--safe-top) - 8px) !important;
+  }
+}
