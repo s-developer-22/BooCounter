@@ -18,9 +18,8 @@
   let lastFocusedElement = null;
   let toastTimer = null;
   let historyIndex = 0;
-  let historySwipeStartY = null;
-  let historySwipeStartX = null;
   let historyHintTimer = null;
+  let historyScrollTimer = null;
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -221,46 +220,64 @@
 
     historyIndex = Math.max(0, Math.min(historyIndex, count - 1));
 
-    const hand = state.hands[historyIndex];
-    const scoreA = totalForHand(hand, 'a');
-    const scoreB = totalForHand(hand, 'b');
+    const fragment = document.createDocumentFragment();
 
-    els.historyList.innerHTML = `
-      <div class="history-row">
-        <span class="round-number">${historyIndex + 1}</span>
-        <div class="hand-cell">
-          <b>${scoreA}</b>
-          <small>${hand.baseA} + ${hand.cardsA}</small>
+    state.hands.forEach((hand, index) => {
+      const page = document.createElement('section');
+      page.className = 'history-page';
+      page.dataset.historyIndex = String(index);
+
+      const scoreA = totalForHand(hand, 'a');
+      const scoreB = totalForHand(hand, 'b');
+
+      page.innerHTML = `
+        <div class="history-row">
+          <span class="round-number">${index + 1}</span>
+          <div class="hand-cell">
+            <b>${scoreA}</b>
+            <small>${hand.baseA} + ${hand.cardsA}</small>
+          </div>
+          <div class="hand-cell">
+            <b>${scoreB}</b>
+            <small>${hand.baseB} + ${hand.cardsB}</small>
+          </div>
+          <div class="row-actions">
+            <button class="icon-btn" type="button" data-edit-hand="${index}" aria-label="Modifica mano ${index + 1}">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 17.3V21h3.7L18.6 10.1l-3.7-3.7L4 17.3Zm2 1.2 8.9-8.9 1 1-8.9 8.9H6v-1Zm13.7-11.2a1 1 0 0 0 0-1.4l-1.6-1.6a1 1 0 0 0-1.4 0l-1 1 3.7 3.7 1-1Z"/></svg>
+            </button>
+            <button class="icon-btn icon-btn--danger" type="button" data-delete-hand="${index}" aria-label="Elimina mano ${index + 1}">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 3h8l1 2h4v2H3V5h4l1-2Zm-2 6h12l-1 12H7L6 9Zm3 2 .5 8h1L10 11H9Zm5 0-.5 8h1L15 11h-1Z"/></svg>
+            </button>
+          </div>
         </div>
-        <div class="hand-cell">
-          <b>${scoreB}</b>
-          <small>${hand.baseB} + ${hand.cardsB}</small>
-        </div>
-        <div class="row-actions">
-          <button class="icon-btn" type="button" data-edit-hand="${historyIndex}" aria-label="Modifica mano ${historyIndex + 1}">
-            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 17.3V21h3.7L18.6 10.1l-3.7-3.7L4 17.3Zm2 1.2 8.9-8.9 1 1-8.9 8.9H6v-1Zm13.7-11.2a1 1 0 0 0 0-1.4l-1.6-1.6a1 1 0 0 0-1.4 0l-1 1 3.7 3.7 1-1Z"/></svg>
-          </button>
-          <button class="icon-btn icon-btn--danger" type="button" data-delete-hand="${historyIndex}" aria-label="Elimina mano ${historyIndex + 1}">
-            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 3h8l1 2h4v2H3V5h4l1-2Zm-2 6h12l-1 12H7L6 9Zm3 2 .5 8h1L10 11H9Zm5 0-.5 8h1L15 11h-1Z"/></svg>
-          </button>
-        </div>
-      </div>
-      ${count > 1 ? `
-        <div class="history-pager is-hinting" aria-hidden="true">
-          <span class="history-dot"></span>
-          <span class="history-dot history-dot--active"></span>
-          <span class="history-dot"></span>
-        </div>
-        <div class="history-swipe-note" aria-hidden="true">Scorri per vedere le altre mani</div>
-      ` : ''}`;
+        ${count > 1 ? `
+          <div class="history-pager is-hinting" aria-hidden="true">
+            <span class="history-dot"></span>
+            <span class="history-dot history-dot--active"></span>
+            <span class="history-dot"></span>
+          </div>
+        ` : `<div class="history-pager" aria-hidden="true"></div>`}
+      `;
+
+      fragment.appendChild(page);
+    });
+
+    els.historyList.replaceChildren(fragment);
+
+    requestAnimationFrame(() => {
+      const page = els.historyList.querySelector(`[data-history-index="${historyIndex}"]`);
+      if (page) {
+        els.historyList.scrollTop = page.offsetTop;
+      }
+    });
 
     if (count > 1) {
       clearTimeout(historyHintTimer);
-      els.historyList.classList.add('show-swipe-note');
       historyHintTimer = setTimeout(() => {
-        els.historyList.classList.remove('show-swipe-note');
-        $('.history-pager', els.historyList)?.classList.remove('is-hinting');
-      }, 2400);
+        els.historyList.querySelectorAll('.history-pager').forEach((pager) => {
+          pager.classList.remove('is-hinting');
+        });
+      }, 2600);
     }
   }
 
@@ -542,25 +559,6 @@
     }
   });
 
-  function moveHistory(direction) {
-    if (state.hands.length <= 1) return;
-
-    const nextIndex = Math.max(
-      0,
-      Math.min(historyIndex + direction, state.hands.length - 1)
-    );
-
-    if (nextIndex === historyIndex) return;
-    historyIndex = nextIndex;
-    renderHistory();
-  }
-
-  els.historyList.addEventListener('touchstart', (event) => {
-    if (state.hands.length <= 1 || event.touches.length !== 1) return;
-    historySwipeStartY = event.touches[0].clientY;
-    historySwipeStartX = event.touches[0].clientX;
-  }, { passive: true });
-
   els.historyList.addEventListener('touchend', (event) => {
     if (
       historySwipeStartY === null ||
@@ -579,6 +577,31 @@
     if (Math.abs(deltaY) < 28 || Math.abs(deltaY) <= Math.abs(deltaX)) return;
 
     moveHistory(deltaY < 0 ? 1 : -1);
+  }, { passive: true });
+
+  els.historyList.addEventListener('scroll', () => {
+    if (state.hands.length <= 1) return;
+
+    clearTimeout(historyScrollTimer);
+
+    historyScrollTimer = setTimeout(() => {
+      const pages = [...els.historyList.querySelectorAll('.history-page')];
+      if (!pages.length) return;
+
+      const top = els.historyList.scrollTop;
+      let nearestIndex = historyIndex;
+      let nearestDistance = Infinity;
+
+      pages.forEach((page, index) => {
+        const distance = Math.abs(page.offsetTop - top);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestIndex = index;
+        }
+      });
+
+      historyIndex = nearestIndex;
+    }, 70);
   }, { passive: true });
 
   els.confirmDangerBtn.addEventListener('click', async () => {

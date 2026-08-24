@@ -322,7 +322,7 @@ input:focus-visible {
 }
 
 .history-card {
-  height: 176px;
+  height: 150px;
   overflow: hidden;
   border: 1px solid rgba(198, 159, 213, .18);
   border-radius: 22px;
@@ -357,11 +357,16 @@ input:focus-visible {
 }
 
 .history-list {
-  height: 134px;
+  height: 108px;
   min-height: 0;
   position: relative;
-  overflow: hidden;
-  touch-action: pan-x;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  touch-action: pan-y;
 }
 
 .history-row {
@@ -979,23 +984,8 @@ input:focus-visible {
   animation: historyDotWave 1.35s .24s ease-in-out infinite;
 }
 
-.history-swipe-note {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 2px;
-  text-align: center;
-  color: rgba(113, 68, 143, .55);
-  font-size: 8px;
-  letter-spacing: .05em;
-  opacity: 0;
-  pointer-events: none;
-}
 
-.history-list.show-swipe-note .history-swipe-note {
-  animation: historySwipeNote 2.2s ease forwards;
-}
-
+.history-list.show-swipe-note 
 @keyframes historyDotWave {
   0%, 70%, 100% { transform: translateY(0) scale(.9); opacity: .55; }
   35% { transform: translateY(-3px) scale(1.08); opacity: 1; }
@@ -1006,8 +996,6 @@ input:focus-visible {
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes historySwipeNote {
-  0% { opacity: 0; transform: translateY(3px); }
   20%, 70% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(-2px); }
 }
@@ -1031,4 +1019,122 @@ input:focus-visible {
   .history { margin-top: 34px; }
   .history-card { height: 166px; }
   .history-list { height: 124px; }
+}
+
+
+.history-list::-webkit-scrollbar {
+  display: none;
+}
+
+.history-page {
+  height: 108px;
+  min-height: 108px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: grid;
+  grid-template-rows: 1fr 24px;
+}
+
+.history-page .history-row {
+  min-height: 84px;
+}
+
+.history-pager {
+  height: 24px;
+  padding-bottom: 2px;
+}
+
+.history-dot {
+  width: 6px;
+  height: 6px;
+  background: rgba(110, 106, 112, .28);
+}
+
+.history-dot--active {
+  background: rgba(82, 78, 86, .62);
+}
+
+.history-pager.is-hinting .history-dot:nth-child(1) {
+  animation: neutralDotWave 1.5s ease-in-out infinite;
+}
+.history-pager.is-hinting .history-dot:nth-child(2) {
+  animation: neutralDotWave 1.5s .12s ease-in-out infinite;
+}
+.history-pager.is-hinting .history-dot:nth-child(3) {
+  animation: neutralDotWave 1.5s .24s ease-in-out infinite;
+}
+
+@keyframes neutralDotWave {
+  0%, 72%, 100% { transform: translateY(0); opacity: .5; }
+  36% { transform: translateY(-2px); opacity: .95; }
+}
+
+/* Keep "Nuova partita" always visible inside the fixed page */
+.new-game {
+  margin-top: 18px;
+  flex: 0 0 auto;
+}
+
+@media (max-height: 760px) {
+  .history {
+    margin-top: 36px;
+  }
+
+  .history-card {
+    height: 144px;
+  }
+
+  .history-list,
+  .history-page {
+    height: 102px;
+    min-height: 102px;
+  }
+
+  .history-page {
+    grid-template-rows: 1fr 22px;
+  }
+
+  .history-page .history-row {
+    min-height: 80px;
+  }
+
+  .history-pager {
+    height: 22px;
+  }
+
+  .new-game {
+    margin-top: 14px;
+  }
+}
+
+@media (max-height: 690px) {
+  .history {
+    margin-top: 28px;
+  }
+
+  .history-card {
+    height: 138px;
+  }
+
+  .history-list,
+  .history-page {
+    height: 96px;
+    min-height: 96px;
+  }
+
+  .history-page {
+    grid-template-rows: 1fr 20px;
+  }
+
+  .history-page .history-row {
+    min-height: 76px;
+  }
+
+  .history-pager {
+    height: 20px;
+  }
+
+  .new-game {
+    margin-top: 10px;
+  }
 }
