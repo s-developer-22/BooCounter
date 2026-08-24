@@ -210,9 +210,6 @@
       historyIndex = 0;
       els.historyList.innerHTML = `
         <div class="empty-state">
-          <div class="empty-symbol" aria-hidden="true">
-            <span></span><span></span><span></span><span></span>
-          </div>
           <p>Nessuna mano inserita.</p>
         </div>`;
       return;

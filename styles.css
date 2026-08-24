@@ -370,8 +370,9 @@ input:focus-visible {
 }
 
 .history-row {
-  min-height: 90px;
-  padding: 8px 6px 8px 12px;
+  width: 100%;
+  min-height: 66px;
+  padding: 6px 6px 6px 12px;
   border-bottom: 0;
   animation: historyRowIn 180ms ease;
 }
@@ -434,12 +435,13 @@ input:focus-visible {
 }
 
 .empty-state {
-  min-height: 118px;
-  padding: 18px;
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 10px;
+  width: 100%;
+  height: 90px;
+  min-height: 90px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--muted);
   font-size: 11px;
   text-align: center;
@@ -447,22 +449,7 @@ input:focus-visible {
 
 .empty-state p { margin: 0; }
 
-.empty-symbol {
-  width: 42px;
-  height: 42px;
-  padding: 9px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px;
-  border-radius: 13px;
-  background: var(--lemon);
-  transform: rotate(45deg);
-}
 
-.empty-symbol span {
-  border-radius: 50%;
-  background: var(--wisteria);
-}
 
 .new-game {
   min-height: 48px;
@@ -1060,12 +1047,14 @@ input:focus-visible {
 .history-page {
   height: 90px;
   min-height: 90px;
+  display: flex;
+  align-items: center;
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
 
 .history-side-controls {
-  height: 82px;
+  height: 66px;
   display: grid;
   grid-template-columns: 36px 24px;
   align-items: center;
@@ -1074,11 +1063,11 @@ input:focus-visible {
 }
 
 .history-page .row-actions {
-  height: 82px;
+  height: 66px;
 }
 
 .history-nav {
-  height: 76px;
+  height: 62px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1133,13 +1122,17 @@ input:focus-visible {
     min-height: 84px;
   }
 
+  .history-page .history-row {
+    min-height: 62px;
+  }
+
   .history-side-controls,
   .history-page .row-actions {
-    height: 76px;
+    height: 62px;
   }
 
   .history-nav {
-    height: 72px;
+    height: 58px;
   }
 }
 
@@ -1149,13 +1142,17 @@ input:focus-visible {
     min-height: 80px;
   }
 
+  .history-page .history-row {
+    min-height: 58px;
+  }
+
   .history-side-controls,
   .history-page .row-actions {
-    height: 72px;
+    height: 58px;
   }
 
   .history-nav {
-    height: 68px;
+    height: 54px;
   }
 }
 
@@ -1163,4 +1160,19 @@ input:focus-visible {
 @keyframes historyArrowHintUp {
   0%, 70%, 100% { transform: translateY(0); opacity: .55; }
   35% { transform: translateY(-3px); opacity: .95; }
+}
+
+
+@media (max-height: 760px) {
+  .empty-state {
+    height: 84px;
+    min-height: 84px;
+  }
+}
+
+@media (max-height: 690px) {
+  .empty-state {
+    height: 80px;
+    min-height: 80px;
+  }
 }
