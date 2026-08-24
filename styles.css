@@ -1067,10 +1067,10 @@ input:focus-visible {
 .history-side-controls {
   height: 82px;
   display: grid;
-  grid-template-columns: 36px 22px;
+  grid-template-columns: 36px 24px;
   align-items: center;
   justify-content: end;
-  gap: 2px;
+  gap: 4px;
 }
 
 .history-page .row-actions {
@@ -1079,18 +1079,19 @@ input:focus-visible {
 
 .history-nav {
   height: 76px;
-  display: grid;
-  grid-template-rows: 18px 1fr 18px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-items: center;
+  justify-content: center;
+  gap: 7px;
   color: rgba(86, 81, 90, .52);
   user-select: none;
   pointer-events: none;
 }
 
 .history-arrow {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   display: grid;
   place-items: center;
   opacity: .24;
@@ -1106,43 +1107,23 @@ input:focus-visible {
   fill: currentColor;
 }
 
-.history-dots {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
 
-.history-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: rgba(105, 100, 109, .25);
-  transform: scale(.92);
-  transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;
-}
 
-.history-dot.is-current {
-  background: rgba(74, 70, 78, .68);
-  transform: scale(1.15);
-}
 
 .history-nav.is-hinting .history-arrow--down.is-available {
   animation: historyArrowHint 1.45s ease-in-out infinite;
 }
 
-.history-nav.is-hinting .history-dots {
-  animation: historyDotsHint 1.45s ease-in-out infinite;
+.history-nav.is-hinting .history-arrow--up.is-available:not(.history-arrow--down) {
+  animation: historyArrowHintUp 1.45s ease-in-out infinite;
 }
 
+.history-nav.is-hinting 
 @keyframes historyArrowHint {
   0%, 70%, 100% { transform: translateY(0); opacity: .55; }
   35% { transform: translateY(3px); opacity: .95; }
 }
 
-@keyframes historyDotsHint {
-  0%, 70%, 100% { transform: translateY(0); }
   35% { transform: translateY(2px); }
 }
 
@@ -1176,4 +1157,10 @@ input:focus-visible {
   .history-nav {
     height: 68px;
   }
+}
+
+
+@keyframes historyArrowHintUp {
+  0%, 70%, 100% { transform: translateY(0); opacity: .55; }
+  35% { transform: translateY(-3px); opacity: .95; }
 }

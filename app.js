@@ -232,13 +232,6 @@
       const hasPrevious = index > 0;
       const hasNext = index < count - 1;
 
-      let dotPosition = 1;
-      if (count > 1) {
-        if (index === 0) dotPosition = 0;
-        else if (index === count - 1) dotPosition = 2;
-        else dotPosition = 1;
-      }
-
       page.innerHTML = `
         <div class="history-row">
           <span class="round-number">${index + 1}</span>
@@ -267,12 +260,6 @@
               <div class="history-nav is-hinting" aria-hidden="true">
                 <span class="history-arrow history-arrow--up ${hasPrevious ? 'is-available' : ''}">
                   <svg viewBox="0 0 24 24"><path d="m7 14 5-5 5 5H7Z"/></svg>
-                </span>
-
-                <span class="history-dots">
-                  <i class="history-dot ${dotPosition === 0 ? 'is-current' : ''}"></i>
-                  <i class="history-dot ${dotPosition === 1 ? 'is-current' : ''}"></i>
-                  <i class="history-dot ${dotPosition === 2 ? 'is-current' : ''}"></i>
                 </span>
 
                 <span class="history-arrow history-arrow--down ${hasNext ? 'is-available' : ''}">
