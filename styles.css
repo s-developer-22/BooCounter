@@ -33,11 +33,21 @@ html, body {
 
 body {
   padding:
-    calc(var(--safe-top) + 10px)
-    calc(var(--safe-right) + 12px)
-    calc(var(--safe-bottom) + 12px)
-    calc(var(--safe-left) + 12px);
+    calc(var(--safe-top) + 12px)
+    0
+    calc(var(--safe-bottom) + 10px);
+  overflow-x: hidden;
   overscroll-behavior-y: none;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 button:focus-visible,
@@ -47,25 +57,28 @@ input:focus-visible {
 }
 
 .app {
-  width: min(calc(100% - 24px), 560px);
-  min-height: calc(100vh - var(--safe-top) - var(--safe-bottom) - 24px);
-  min-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 24px);
-  margin: 0 auto;
+  width: 100%;
+  min-height: calc(100vh - var(--safe-top) - var(--safe-bottom) - 22px);
+  min-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 22px);
+  margin: 0;
   padding: 28px 22px 24px;
-  border-radius: 34px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .10);
+  border-radius: 30px;
   background:
     radial-gradient(circle at 8% 0%, rgba(198, 159, 213, .16), transparent 25rem),
     radial-gradient(circle at 95% 17%, rgba(253, 253, 201, .62), transparent 25rem),
     var(--paper);
   box-shadow:
-    0 12px 36px rgba(0, 0, 0, .20),
-    0 1px 0 rgba(255,255,255,.06);
+    0 10px 30px rgba(198, 159, 213, .10),
+    0 3px 14px rgba(0, 0, 0, .24),
+    inset 0 1px 0 rgba(255, 255, 255, .40);
 }
 
 .topbar {
   display: flex;
   justify-content: center;
-  padding: 6px 0 34px;
+  padding: 5px 0 30px;
 }
 
 .status {
@@ -459,6 +472,10 @@ input:focus-visible {
   z-index: 50;
   display: grid;
   align-items: end;
+  padding:
+    0
+    10px
+    calc(var(--safe-bottom) + 10px);
 }
 
 .sheet-layer[hidden] { display: none; }
@@ -475,28 +492,27 @@ input:focus-visible {
 .sheet {
   position: relative;
   z-index: 1;
-  width: min(calc(100% - 24px), 560px);
-  max-height: calc(100vh - 18px);
-  max-height: calc(100dvh - 18px);
+  width: min(100%, 540px);
+  max-height: calc(100vh - var(--safe-top) - 34px);
+  max-height: calc(100dvh - var(--safe-top) - 34px);
   margin: 0 auto;
-  padding:
-    12px
-    calc(20px + var(--safe-right))
-    calc(20px + var(--safe-bottom))
-    calc(20px + var(--safe-left));
+  padding: 12px 20px 20px;
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
-  border-radius: 32px 32px 0 0;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 28px;
   background: var(--surface);
-  box-shadow: 0 -18px 48px rgba(45, 28, 55, .12);
+  box-shadow:
+    0 18px 54px rgba(0,0,0,.30),
+    0 8px 26px rgba(198,159,213,.10);
   animation: sheetIn 185ms cubic-bezier(.2,.75,.2,1);
 }
 
 .sheet[hidden] { display: none; }
 
 .sheet--compact {
-  padding-bottom: calc(24px + var(--safe-bottom));
+  padding-bottom: 24px;
 }
 
 .sheet-handle {
@@ -859,34 +875,63 @@ input:focus-visible {
 }
 
 
+/* Definitive black-frame layout:
+   black only above/below; no lateral gutter. */
 @media (max-width: 390px) {
   body {
     padding:
-      calc(var(--safe-top) + 8px)
-      calc(var(--safe-right) + 10px)
-      calc(var(--safe-bottom) + 10px)
-      calc(var(--safe-left) + 10px);
+      calc(var(--safe-top) + 10px)
+      0
+      calc(var(--safe-bottom) + 8px);
   }
 
   .app {
+    width: 100%;
+    min-height: calc(100vh - var(--safe-top) - var(--safe-bottom) - 18px);
+    min-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 18px);
+    margin: 0;
     padding: 24px 15px 22px;
     border-radius: 28px;
-    min-height: calc(100vh - var(--safe-top) - var(--safe-bottom) - 20px);
-    min-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 20px);
+  }
+
+  .sheet-layer {
+    padding:
+      0
+      8px
+      calc(var(--safe-bottom) + 8px);
+  }
+
+  .sheet {
+    width: 100%;
+    padding-left: 14px;
+    padding-right: 14px;
+    border-radius: 26px;
   }
 }
 
 @media (max-width: 350px) {
   body {
     padding:
-      calc(var(--safe-top) + 6px)
-      calc(var(--safe-right) + 8px)
-      calc(var(--safe-bottom) + 8px)
-      calc(var(--safe-left) + 8px);
+      calc(var(--safe-top) + 8px)
+      0
+      calc(var(--safe-bottom) + 7px);
   }
 
   .app {
+    width: 100%;
+    margin: 0;
     padding: 22px 14px 20px;
     border-radius: 26px;
+  }
+
+  .sheet-layer {
+    padding:
+      0
+      7px
+      calc(var(--safe-bottom) + 7px);
+  }
+
+  .sheet {
+    border-radius: 24px;
   }
 }
