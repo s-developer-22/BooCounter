@@ -1,4 +1,4 @@
-const CACHE_NAME = 'counter-burraco-v1.0.0';
+const CACHE_NAME = 'counter-burraco-v1.1.0';
 
 const APP_SHELL = [
   './',
@@ -6,11 +6,11 @@ const APP_SHELL = [
   './styles.css',
   './app.js',
   './manifest.webmanifest',
-  './icons/favicon.svg',
-  './icons/apple-touch-icon.png',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/icon-maskable-512.png'
+  './favicon.svg',
+  './apple-touch-icon.png',
+  './icon-192.png',
+  './icon-512.png',
+  './icon-maskable-512.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -43,8 +43,10 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put('./index.html', copy));
+          if (response && response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put('./index.html', copy));
+          }
           return response;
         })
         .catch(() => caches.match('./index.html'))
@@ -57,9 +59,10 @@ self.addEventListener('fetch', (event) => {
       if (cached) return cached;
 
       return fetch(request).then((response) => {
-        if (!response || response.status !== 200 || response.type === 'opaque') return response;
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+        if (response && response.ok && response.type !== 'opaque') {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+        }
         return response;
       });
     })

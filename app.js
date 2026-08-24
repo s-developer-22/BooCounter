@@ -2,12 +2,7 @@
   'use strict';
 
   const DEFAULT_STATE = Object.freeze({
-    players: {
-      a1: 'Matteo',
-      a2: 'Alessio',
-      b1: 'Martina',
-      b2: 'Giulia'
-    },
+    players: { a1: 'Matteo', a2: 'Alessio', b1: 'Martina', b2: 'Giulia' },
     hands: []
   });
 
@@ -15,7 +10,7 @@
   const DB_VERSION = 1;
   const STORE = 'app';
   const STATE_KEY = 'current-state';
-  const FALLBACK_KEY = 'counter-burraco-state-v1';
+  const FALLBACK_KEY = 'counter-burraco-state-v2';
 
   let state = cloneDefault();
   let editingIndex = null;
@@ -27,12 +22,14 @@
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
   const els = {
-    teamNameA: $('#teamNameA'),
-    teamNameB: $('#teamNameB'),
-    historyHeadA: $('#historyHeadA'),
-    historyHeadB: $('#historyHeadB'),
-    sheetTeamA: $('#sheetTeamA'),
-    sheetTeamB: $('#sheetTeamB'),
+    playerNameA1: $('#playerNameA1'),
+    playerNameA2: $('#playerNameA2'),
+    playerNameB1: $('#playerNameB1'),
+    playerNameB2: $('#playerNameB2'),
+    sheetTeamA1: $('#sheetTeamA1'),
+    sheetTeamA2: $('#sheetTeamA2'),
+    sheetTeamB1: $('#sheetTeamB1'),
+    sheetTeamB2: $('#sheetTeamB2'),
     scoreA: $('#scoreA'),
     scoreB: $('#scoreB'),
     scoreSideA: $('#scoreSideA'),
@@ -56,6 +53,10 @@
     cardsA: $('#cardsA'),
     baseB: $('#baseB'),
     cardsB: $('#cardsB'),
+    signBaseA: $('#signBaseA'),
+    signCardsA: $('#signCardsA'),
+    signBaseB: $('#signBaseB'),
+    signCardsB: $('#signCardsB'),
     handTotalA: $('#handTotalA'),
     handTotalB: $('#handTotalB'),
     playerA1: $('#playerA1'),
@@ -69,11 +70,15 @@
     toast: $('#toast')
   };
 
+  const signedFields = [
+    [els.baseA, els.signBaseA],
+    [els.cardsA, els.signCardsA],
+    [els.baseB, els.signBaseB],
+    [els.cardsB, els.signCardsB]
+  ];
+
   function cloneDefault() {
-    return {
-      players: { ...DEFAULT_STATE.players },
-      hands: []
-    };
+    return { players: { ...DEFAULT_STATE.players }, hands: [] };
   }
 
   function cleanName(value) {
@@ -81,10 +86,35 @@
     return name || 'Giocatore';
   }
 
-  function integerFromInput(input) {
-    const raw = Number(input.value);
-    if (!Number.isFinite(raw)) return 0;
-    return Math.max(-99999, Math.min(99999, Math.trunc(raw)));
+  function safeInt(value) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return 0;
+    return Math.max(-99999, Math.min(99999, Math.trunc(n)));
+  }
+
+  function normalizeMagnitude(value) {
+    const digits = String(value ?? '').replace(/[^\d]/g, '').slice(0, 5);
+    if (!digits) return 0;
+    return Math.min(99999, Number(digits));
+  }
+
+  function readSignedField(input, toggle) {
+    const magnitude = normalizeMagnitude(input.value);
+    const sign = toggle.dataset.sign === '-1' ? -1 : 1;
+    return magnitude * sign;
+  }
+
+  function setSignedField(input, toggle, value) {
+    const n = safeInt(value);
+    toggle.dataset.sign = n < 0 ? '-1' : '1';
+    toggle.textContent = n < 0 ? '−' : '+';
+    toggle.setAttribute('aria-pressed', n < 0 ? 'true' : 'false');
+    input.value = String(Math.abs(n));
+  }
+
+  function sanitizeMagnitudeInput(input) {
+    const magnitude = normalizeMagnitude(input.value);
+    input.value = String(magnitude);
   }
 
   function normalizeState(value) {
@@ -100,20 +130,13 @@
         b1: cleanName(p.b1 ?? DEFAULT_STATE.players.b1),
         b2: cleanName(p.b2 ?? DEFAULT_STATE.players.b2)
       },
-      hands: hands.map((hand) => {
-        const baseA = safeInt(hand?.baseA);
-        const cardsA = safeInt(hand?.cardsA);
-        const baseB = safeInt(hand?.baseB);
-        const cardsB = safeInt(hand?.cardsB);
-        return { baseA, cardsA, baseB, cardsB };
-      })
+      hands: hands.map((hand) => ({
+        baseA: safeInt(hand?.baseA),
+        cardsA: safeInt(hand?.cardsA),
+        baseB: safeInt(hand?.baseB),
+        cardsB: safeInt(hand?.cardsB)
+      }))
     };
-  }
-
-  function safeInt(value) {
-    const n = Number(value);
-    if (!Number.isFinite(n)) return 0;
-    return Math.max(-99999, Math.min(99999, Math.trunc(n)));
   }
 
   function totalForHand(hand, side) {
@@ -130,27 +153,33 @@
       a += totalForHand(hand, 'a');
       b += totalForHand(hand, 'b');
     }
+
     return { a, b };
   }
 
   function teamLabel(side) {
     return side === 'a'
-      ? `${state.players.a1} · ${state.players.a2}`
-      : `${state.players.b1} · ${state.players.b2}`;
+      ? `${state.players.a1} e ${state.players.a2}`
+      : `${state.players.b1} e ${state.players.b2}`;
+  }
+
+  function renderNames() {
+    els.playerNameA1.textContent = state.players.a1;
+    els.playerNameA2.textContent = state.players.a2;
+    els.playerNameB1.textContent = state.players.b1;
+    els.playerNameB2.textContent = state.players.b2;
+
+    els.sheetTeamA1.textContent = state.players.a1;
+    els.sheetTeamA2.textContent = state.players.a2;
+    els.sheetTeamB1.textContent = state.players.b1;
+    els.sheetTeamB2.textContent = state.players.b2;
   }
 
   function render() {
-    const nameA = teamLabel('a');
-    const nameB = teamLabel('b');
-
-    els.teamNameA.textContent = nameA;
-    els.teamNameB.textContent = nameB;
-    els.historyHeadA.textContent = nameA;
-    els.historyHeadB.textContent = nameB;
-    els.sheetTeamA.textContent = nameA;
-    els.sheetTeamB.textContent = nameB;
+    renderNames();
 
     const score = totals();
+
     els.scoreA.textContent = score.a;
     els.scoreB.textContent = score.b;
 
@@ -160,13 +189,14 @@
     if (score.a === score.b) {
       els.leadText.textContent = 'Partita in parità';
     } else {
-      const leader = score.a > score.b ? nameA : nameB;
+      const leader = score.a > score.b ? teamLabel('a') : teamLabel('b');
       const delta = Math.abs(score.a - score.b);
       els.leadText.textContent = `${leader} avanti di ${delta}`;
     }
 
     const count = state.hands.length;
     els.handCount.textContent = `${count} ${count === 1 ? 'giocata' : 'giocate'}`;
+
     renderHistory();
   }
 
@@ -194,10 +224,12 @@
       row.innerHTML = `
         <span class="round-number">${index + 1}</span>
         <div class="hand-cell">
-          <b>${scoreA}</b><small>${hand.baseA} + ${hand.cardsA}</small>
+          <b>${scoreA}</b>
+          <small>${hand.baseA} + ${hand.cardsA}</small>
         </div>
         <div class="hand-cell">
-          <b>${scoreB}</b><small>${hand.baseB} + ${hand.cardsB}</small>
+          <b>${scoreB}</b>
+          <small>${hand.baseB} + ${hand.cardsB}</small>
         </div>
         <div class="row-actions">
           <button class="icon-btn" type="button" data-edit-hand="${index}" aria-label="Modifica mano ${index + 1}">
@@ -212,20 +244,34 @@
     });
 
     els.historyList.replaceChildren(fragment);
-    els.historyList.scrollTop = els.historyList.scrollHeight;
   }
 
   function updateHandPreview() {
-    els.handTotalA.textContent = integerFromInput(els.baseA) + integerFromInput(els.cardsA);
-    els.handTotalB.textContent = integerFromInput(els.baseB) + integerFromInput(els.cardsB);
+    els.handTotalA.textContent =
+      readSignedField(els.baseA, els.signBaseA) +
+      readSignedField(els.cardsA, els.signCardsA);
+
+    els.handTotalB.textContent =
+      readSignedField(els.baseB, els.signBaseB) +
+      readSignedField(els.cardsB, els.signCardsB);
+  }
+
+  function toggleSign(toggle) {
+    const nextNegative = toggle.dataset.sign !== '-1';
+    toggle.dataset.sign = nextNegative ? '-1' : '1';
+    toggle.textContent = nextNegative ? '−' : '+';
+    toggle.setAttribute('aria-pressed', nextNegative ? 'true' : 'false');
+    updateHandPreview();
   }
 
   function openSheet(sheet) {
     lastFocusedElement = document.activeElement;
     els.sheetLayer.hidden = false;
+
     for (const current of [els.handSheet, els.playersSheet, els.confirmSheet]) {
       current.hidden = current !== sheet;
     }
+
     document.body.style.overflow = 'hidden';
 
     requestAnimationFrame(() => {
@@ -251,19 +297,22 @@
     if (editingIndex === null) {
       els.handSheetTitle.textContent = 'Nuova mano';
       els.confirmHandBtn.textContent = 'Conferma mano';
-      els.baseA.value = '0';
-      els.cardsA.value = '0';
-      els.baseB.value = '0';
-      els.cardsB.value = '0';
+
+      setSignedField(els.baseA, els.signBaseA, 0);
+      setSignedField(els.cardsA, els.signCardsA, 0);
+      setSignedField(els.baseB, els.signBaseB, 0);
+      setSignedField(els.cardsB, els.signCardsB, 0);
     } else {
       const hand = state.hands[editingIndex];
       if (!hand) return;
+
       els.handSheetTitle.textContent = `Modifica mano ${editingIndex + 1}`;
       els.confirmHandBtn.textContent = 'Salva modifica';
-      els.baseA.value = hand.baseA;
-      els.cardsA.value = hand.cardsA;
-      els.baseB.value = hand.baseB;
-      els.cardsB.value = hand.cardsB;
+
+      setSignedField(els.baseA, els.signBaseA, hand.baseA);
+      setSignedField(els.cardsA, els.signCardsA, hand.cardsA);
+      setSignedField(els.baseB, els.signBaseB, hand.baseB);
+      setSignedField(els.cardsB, els.signCardsB, hand.cardsB);
     }
 
     updateHandPreview();
@@ -291,9 +340,10 @@
     clearTimeout(toastTimer);
     els.toast.textContent = message;
     els.toast.hidden = false;
+
     toastTimer = setTimeout(() => {
       els.toast.hidden = true;
-    }, 1800);
+    }, 1500);
   }
 
   async function persistAndRender(message) {
@@ -333,10 +383,9 @@
         request.onerror = () => reject(request.error);
       });
       db.close();
+
       if (value) return normalizeState(value);
-    } catch (_) {
-      // Fallback below.
-    }
+    } catch (_) {}
 
     try {
       const raw = localStorage.getItem(FALLBACK_KEY);
@@ -351,6 +400,7 @@
 
     try {
       const db = await openDb();
+
       await new Promise((resolve, reject) => {
         const tx = db.transaction(STORE, 'readwrite');
         tx.objectStore(STORE).put(normalized, STATE_KEY);
@@ -358,11 +408,10 @@
         tx.onerror = () => reject(tx.error);
         tx.onabort = () => reject(tx.error);
       });
+
       db.close();
       return;
-    } catch (_) {
-      // Fallback below.
-    }
+    } catch (_) {}
 
     try {
       localStorage.setItem(FALLBACK_KEY, JSON.stringify(normalized));
@@ -387,21 +436,34 @@
   });
 
   els.sheetScrim.addEventListener('click', closeSheets);
-  $$('[data-close-sheet]').forEach((button) => button.addEventListener('click', closeSheets));
 
-  for (const input of [els.baseA, els.cardsA, els.baseB, els.cardsB]) {
-    input.addEventListener('input', updateHandPreview);
-    input.addEventListener('focus', () => input.select());
-  }
+  $$('[data-close-sheet]').forEach((button) => {
+    button.addEventListener('click', closeSheets);
+  });
+
+  signedFields.forEach(([input, toggle]) => {
+    toggle.setAttribute('aria-pressed', 'false');
+
+    toggle.addEventListener('click', () => toggleSign(toggle));
+
+    input.addEventListener('input', () => {
+      sanitizeMagnitudeInput(input);
+      updateHandPreview();
+    });
+
+    input.addEventListener('focus', () => {
+      requestAnimationFrame(() => input.select());
+    });
+  });
 
   els.handForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const hand = {
-      baseA: integerFromInput(els.baseA),
-      cardsA: integerFromInput(els.cardsA),
-      baseB: integerFromInput(els.baseB),
-      cardsB: integerFromInput(els.cardsB)
+      baseA: readSignedField(els.baseA, els.signBaseA),
+      cardsA: readSignedField(els.cardsA, els.signCardsA),
+      baseB: readSignedField(els.baseB, els.signBaseB),
+      cardsB: readSignedField(els.cardsB, els.signCardsB)
     };
 
     if (editingIndex === null) {
@@ -433,12 +495,14 @@
 
   els.historyList.addEventListener('click', (event) => {
     const editButton = event.target.closest('[data-edit-hand]');
+
     if (editButton) {
       openHandSheet(Number(editButton.dataset.editHand));
       return;
     }
 
     const deleteButton = event.target.closest('[data-delete-hand]');
+
     if (deleteButton) {
       const index = Number(deleteButton.dataset.deleteHand);
       if (!Number.isInteger(index) || !state.hands[index]) return;

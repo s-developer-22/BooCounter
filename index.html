@@ -13,8 +13,8 @@
   <title>Counter Burraco</title>
 
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
-  <link rel="icon" href="./icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
 </head>
 
@@ -24,20 +24,27 @@
       <div class="status">
         <span class="spark" aria-hidden="true"></span>
         <span>Partita in corso</span>
+        <span class="spark spark--small" aria-hidden="true"></span>
       </div>
     </header>
 
     <section class="teams" aria-label="Squadre">
       <article class="team">
         <span class="team-chip team-chip--one">Squadra 1</span>
-        <h1 class="team-names" id="teamNameA">Matteo · Alessio</h1>
+        <div class="team-names" aria-label="Giocatori squadra 1">
+          <span id="playerNameA1">Matteo</span>
+          <span id="playerNameA2">Alessio</span>
+        </div>
       </article>
 
       <span class="vs" aria-hidden="true">VS</span>
 
       <article class="team">
         <span class="team-chip team-chip--two">Squadra 2</span>
-        <h1 class="team-names" id="teamNameB">Martina · Giulia</h1>
+        <div class="team-names" aria-label="Giocatori squadra 2">
+          <span id="playerNameB1">Martina</span>
+          <span id="playerNameB2">Giulia</span>
+        </div>
       </article>
     </section>
 
@@ -71,17 +78,15 @@
 
     <section class="history">
       <div class="section-heading">
-        <div>
-          <span class="section-kicker">Storico mani</span>
-          <span class="hand-count" id="handCount">0 giocate</span>
-        </div>
+        <span class="section-kicker">Storico mani</span>
+        <span class="hand-count" id="handCount">0 giocate</span>
       </div>
 
       <div class="history-card">
         <div class="history-head" aria-hidden="true">
           <span>#</span>
-          <span id="historyHeadA">Matteo · Alessio</span>
-          <span id="historyHeadB">Martina · Giulia</span>
+          <span>Squadra 1</span>
+          <span>Squadra 2</span>
           <span></span>
         </div>
         <div id="historyList" class="history-list">
@@ -106,6 +111,7 @@
 
     <section class="sheet" id="handSheet" role="dialog" aria-modal="true" aria-labelledby="handSheetTitle" hidden>
       <div class="sheet-handle" aria-hidden="true"></div>
+
       <div class="sheet-title-row">
         <div>
           <span class="sheet-kicker">Punteggio</span>
@@ -117,21 +123,45 @@
       <form id="handForm">
         <div class="hand-grid">
           <div></div>
-          <div class="hand-team-label hand-team-label--one" id="sheetTeamA">Matteo · Alessio</div>
-          <div class="hand-team-label hand-team-label--two" id="sheetTeamB">Martina · Giulia</div>
+
+          <div class="hand-team-label hand-team-label--one">
+            <b>Squadra 1</b>
+            <span id="sheetTeamA1">Matteo</span>
+            <span id="sheetTeamA2">Alessio</span>
+          </div>
+
+          <div class="hand-team-label hand-team-label--two">
+            <b>Squadra 2</b>
+            <span id="sheetTeamB1">Martina</span>
+            <span id="sheetTeamB2">Giulia</span>
+          </div>
 
           <label class="field-label" for="baseA">Base</label>
-          <div class="number-shell"><input id="baseA" name="baseA" type="number" inputmode="numeric" step="5" value="0"></div>
-          <div class="number-shell"><input id="baseB" name="baseB" type="number" inputmode="numeric" step="5" value="0"></div>
+          <div class="signed-field">
+            <button class="sign-toggle sign-toggle--one" type="button" id="signBaseA" data-sign="1" aria-label="Cambia segno Base squadra 1">+</button>
+            <input id="baseA" name="baseA" type="text" inputmode="numeric" pattern="[0-9]*" value="0" autocomplete="off">
+          </div>
+          <div class="signed-field">
+            <button class="sign-toggle sign-toggle--two" type="button" id="signBaseB" data-sign="1" aria-label="Cambia segno Base squadra 2">+</button>
+            <input id="baseB" name="baseB" type="text" inputmode="numeric" pattern="[0-9]*" value="0" autocomplete="off">
+          </div>
 
           <label class="field-label" for="cardsA">Carte</label>
-          <div class="number-shell"><input id="cardsA" name="cardsA" type="number" inputmode="numeric" step="5" value="0"></div>
-          <div class="number-shell"><input id="cardsB" name="cardsB" type="number" inputmode="numeric" step="5" value="0"></div>
+          <div class="signed-field">
+            <button class="sign-toggle sign-toggle--one" type="button" id="signCardsA" data-sign="1" aria-label="Cambia segno Carte squadra 1">+</button>
+            <input id="cardsA" name="cardsA" type="text" inputmode="numeric" pattern="[0-9]*" value="0" autocomplete="off">
+          </div>
+          <div class="signed-field">
+            <button class="sign-toggle sign-toggle--two" type="button" id="signCardsB" data-sign="1" aria-label="Cambia segno Carte squadra 2">+</button>
+            <input id="cardsB" name="cardsB" type="text" inputmode="numeric" pattern="[0-9]*" value="0" autocomplete="off">
+          </div>
 
           <span class="field-label field-label--total">Mano</span>
           <output class="hand-total hand-total--one" id="handTotalA">0</output>
           <output class="hand-total hand-total--two" id="handTotalB">0</output>
         </div>
+
+        <p class="negative-hint">Tocca <strong>+</strong> accanto a un valore per trasformarlo in <strong>−</strong>.</p>
 
         <div class="sheet-actions">
           <button class="secondary-btn" type="button" data-close-sheet>Annulla</button>
@@ -142,6 +172,7 @@
 
     <section class="sheet sheet--compact" id="playersSheet" role="dialog" aria-modal="true" aria-labelledby="playersTitle" hidden>
       <div class="sheet-handle" aria-hidden="true"></div>
+
       <div class="sheet-title-row">
         <div>
           <span class="sheet-kicker">Squadre</span>
@@ -157,6 +188,7 @@
             <label>Giocatore 1<input id="playerA1" maxlength="24" autocomplete="off"></label>
             <label>Giocatore 2<input id="playerA2" maxlength="24" autocomplete="off"></label>
           </fieldset>
+
           <fieldset>
             <legend><span class="team-dot team-dot--two"></span>Squadra 2</legend>
             <label>Giocatore 1<input id="playerB1" maxlength="24" autocomplete="off"></label>
@@ -173,11 +205,13 @@
 
     <section class="sheet sheet--compact" id="confirmSheet" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" hidden>
       <div class="sheet-handle" aria-hidden="true"></div>
+
       <div class="confirm-copy">
         <span class="sheet-kicker" id="confirmKicker">Conferma</span>
         <h2 id="confirmTitle">Nuova partita?</h2>
         <p id="confirmText">I punteggi e le mani della partita corrente verranno azzerati.</p>
       </div>
+
       <div class="sheet-actions">
         <button class="secondary-btn" type="button" data-close-sheet>Annulla</button>
         <button class="danger-btn" id="confirmDangerBtn" type="button">Azzera</button>
