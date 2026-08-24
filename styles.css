@@ -144,7 +144,7 @@ input:focus-visible {
 .team-names {
   display: grid;
   gap: 4px;
-  margin-top: 10px;
+  margin-top: 6px;
   min-width: 0;
   font-size: 16px;
   line-height: 1.1;
@@ -199,7 +199,7 @@ input:focus-visible {
 }
 
 .score-side {
-  height: 102px;
+  height: 84px;
   min-width: 0;
   display: grid;
   place-items: center;
@@ -229,7 +229,7 @@ input:focus-visible {
 .score-side.leading:last-child .score { color: #6E641B; }
 
 .score-divider {
-  height: 102px;
+  height: 84px;
   display: grid;
   grid-template-rows: 1fr auto 1fr;
   justify-items: center;
@@ -322,7 +322,7 @@ input:focus-visible {
 }
 
 .history-card {
-  height: 150px;
+  height: 132px;
   overflow: hidden;
   border: 1px solid rgba(198, 159, 213, .18);
   border-radius: 22px;
@@ -357,7 +357,7 @@ input:focus-visible {
 }
 
 .history-list {
-  height: 108px;
+  height: 90px;
   min-height: 0;
   position: relative;
   overflow-y: auto;
@@ -370,8 +370,8 @@ input:focus-visible {
 }
 
 .history-row {
-  min-height: 82px;
-  padding: 10px 8px 8px 12px;
+  min-height: 90px;
+  padding: 8px 6px 8px 12px;
   border-bottom: 0;
   animation: historyRowIn 180ms ease;
 }
@@ -405,14 +405,17 @@ input:focus-visible {
 }
 
 .row-actions {
+  height: 82px;
   display: flex;
-  justify-content: flex-end;
-  gap: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
 }
 
 .icon-btn {
   width: 36px;
-  height: 44px;
+  height: 36px;
   padding: 0;
   border: 0;
   border-radius: 12px;
@@ -851,7 +854,7 @@ input:focus-visible {
   .team-names { font-size: 15px; }
   .scoreboard { min-height: 140px; }
   .score-side { height: 118px; }
-  .score-divider { height: 96px; }
+  .score-divider { height: 80px; }
   .score { font-size: clamp(54px, 18.5vw, 84px); }
   .history { margin-top: 44px; }
   .history-head,
@@ -953,36 +956,9 @@ input:focus-visible {
 
 
 /* Storico mani: una mano per volta */
-.history-pager {
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  pointer-events: none;
-}
 
-.history-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(113, 68, 143, .24);
-  transform: translateY(0) scale(.9);
-}
 
-.history-dot--active {
-  background: var(--wisteria-deep);
-}
 
-.history-pager.is-hinting .history-dot:nth-child(1) {
-  animation: historyDotWave 1.35s ease-in-out infinite;
-}
-.history-pager.is-hinting .history-dot:nth-child(2) {
-  animation: historyDotWave 1.35s .12s ease-in-out infinite;
-}
-.history-pager.is-hinting .history-dot:nth-child(3) {
-  animation: historyDotWave 1.35s .24s ease-in-out infinite;
-}
 
 
 .history-list.show-swipe-note 
@@ -1026,52 +1002,18 @@ input:focus-visible {
   display: none;
 }
 
-.history-page {
-  height: 108px;
-  min-height: 108px;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  display: grid;
-  grid-template-rows: 1fr 24px;
-}
 
-.history-page .history-row {
-  min-height: 84px;
-}
 
-.history-pager {
-  height: 24px;
-  padding-bottom: 2px;
-}
 
-.history-dot {
-  width: 6px;
-  height: 6px;
-  background: rgba(110, 106, 112, .28);
-}
 
-.history-dot--active {
-  background: rgba(82, 78, 86, .62);
-}
 
-.history-pager.is-hinting .history-dot:nth-child(1) {
-  animation: neutralDotWave 1.5s ease-in-out infinite;
-}
-.history-pager.is-hinting .history-dot:nth-child(2) {
-  animation: neutralDotWave 1.5s .12s ease-in-out infinite;
-}
-.history-pager.is-hinting .history-dot:nth-child(3) {
-  animation: neutralDotWave 1.5s .24s ease-in-out infinite;
-}
 
-@keyframes neutralDotWave {
-  0%, 72%, 100% { transform: translateY(0); opacity: .5; }
   36% { transform: translateY(-2px); opacity: .95; }
 }
 
 /* Keep "Nuova partita" always visible inside the fixed page */
 .new-game {
-  margin-top: 18px;
+  margin-top: 10px;
   flex: 0 0 auto;
 }
 
@@ -1081,29 +1023,16 @@ input:focus-visible {
   }
 
   .history-card {
-    height: 144px;
+    height: 126px;
   }
 
   .history-list,
-  .history-page {
-    height: 102px;
-    min-height: 102px;
-  }
-
-  .history-page {
-    grid-template-rows: 1fr 22px;
-  }
-
-  .history-page .history-row {
-    min-height: 80px;
-  }
-
-  .history-pager {
-    height: 22px;
-  }
-
+  
+  
+  
+  
   .new-game {
-    margin-top: 14px;
+    margin-top: 8px;
   }
 }
 
@@ -1113,28 +1042,138 @@ input:focus-visible {
   }
 
   .history-card {
-    height: 138px;
+    height: 122px;
   }
 
   .history-list,
-  .history-page {
-    height: 96px;
-    min-height: 96px;
-  }
-
-  .history-page {
-    grid-template-rows: 1fr 20px;
-  }
-
-  .history-page .history-row {
-    min-height: 76px;
-  }
-
-  .history-pager {
-    height: 20px;
-  }
-
+  
+  
+  
+  
   .new-game {
     margin-top: 10px;
+  }
+}
+
+
+/* Vertical navigation for Storico mani */
+.history-page {
+  height: 90px;
+  min-height: 90px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.history-side-controls {
+  height: 82px;
+  display: grid;
+  grid-template-columns: 36px 22px;
+  align-items: center;
+  justify-content: end;
+  gap: 2px;
+}
+
+.history-page .row-actions {
+  height: 82px;
+}
+
+.history-nav {
+  height: 76px;
+  display: grid;
+  grid-template-rows: 18px 1fr 18px;
+  align-items: center;
+  justify-items: center;
+  color: rgba(86, 81, 90, .52);
+  user-select: none;
+  pointer-events: none;
+}
+
+.history-arrow {
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  opacity: .24;
+}
+
+.history-arrow.is-available {
+  opacity: .72;
+}
+
+.history-arrow svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+}
+
+.history-dots {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.history-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(105, 100, 109, .25);
+  transform: scale(.92);
+  transition: transform 160ms ease, background 160ms ease, opacity 160ms ease;
+}
+
+.history-dot.is-current {
+  background: rgba(74, 70, 78, .68);
+  transform: scale(1.15);
+}
+
+.history-nav.is-hinting .history-arrow--down.is-available {
+  animation: historyArrowHint 1.45s ease-in-out infinite;
+}
+
+.history-nav.is-hinting .history-dots {
+  animation: historyDotsHint 1.45s ease-in-out infinite;
+}
+
+@keyframes historyArrowHint {
+  0%, 70%, 100% { transform: translateY(0); opacity: .55; }
+  35% { transform: translateY(3px); opacity: .95; }
+}
+
+@keyframes historyDotsHint {
+  0%, 70%, 100% { transform: translateY(0); }
+  35% { transform: translateY(2px); }
+}
+
+@media (max-height: 760px) {
+  .history-page {
+    height: 84px;
+    min-height: 84px;
+  }
+
+  .history-side-controls,
+  .history-page .row-actions {
+    height: 76px;
+  }
+
+  .history-nav {
+    height: 72px;
+  }
+}
+
+@media (max-height: 690px) {
+  .history-page {
+    height: 80px;
+    min-height: 80px;
+  }
+
+  .history-side-controls,
+  .history-page .row-actions {
+    height: 72px;
+  }
+
+  .history-nav {
+    height: 68px;
   }
 }

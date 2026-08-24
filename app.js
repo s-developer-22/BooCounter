@@ -229,34 +229,59 @@
 
       const scoreA = totalForHand(hand, 'a');
       const scoreB = totalForHand(hand, 'b');
+      const hasPrevious = index > 0;
+      const hasNext = index < count - 1;
+
+      let dotPosition = 1;
+      if (count > 1) {
+        if (index === 0) dotPosition = 0;
+        else if (index === count - 1) dotPosition = 2;
+        else dotPosition = 1;
+      }
 
       page.innerHTML = `
         <div class="history-row">
           <span class="round-number">${index + 1}</span>
+
           <div class="hand-cell">
             <b>${scoreA}</b>
             <small>${hand.baseA} + ${hand.cardsA}</small>
           </div>
+
           <div class="hand-cell">
             <b>${scoreB}</b>
             <small>${hand.baseB} + ${hand.cardsB}</small>
           </div>
-          <div class="row-actions">
-            <button class="icon-btn" type="button" data-edit-hand="${index}" aria-label="Modifica mano ${index + 1}">
-              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 17.3V21h3.7L18.6 10.1l-3.7-3.7L4 17.3Zm2 1.2 8.9-8.9 1 1-8.9 8.9H6v-1Zm13.7-11.2a1 1 0 0 0 0-1.4l-1.6-1.6a1 1 0 0 0-1.4 0l-1 1 3.7 3.7 1-1Z"/></svg>
-            </button>
-            <button class="icon-btn icon-btn--danger" type="button" data-delete-hand="${index}" aria-label="Elimina mano ${index + 1}">
-              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 3h8l1 2h4v2H3V5h4l1-2Zm-2 6h12l-1 12H7L6 9Zm3 2 .5 8h1L10 11H9Zm5 0-.5 8h1L15 11h-1Z"/></svg>
-            </button>
+
+          <div class="history-side-controls">
+            <div class="row-actions">
+              <button class="icon-btn" type="button" data-edit-hand="${index}" aria-label="Modifica mano ${index + 1}">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 17.3V21h3.7L18.6 10.1l-3.7-3.7L4 17.3Zm2 1.2 8.9-8.9 1 1-8.9 8.9H6v-1Zm13.7-11.2a1 1 0 0 0 0-1.4l-1.6-1.6a1 1 0 0 0-1.4 0l-1 1 3.7 3.7 1-1Z"/></svg>
+              </button>
+              <button class="icon-btn icon-btn--danger" type="button" data-delete-hand="${index}" aria-label="Elimina mano ${index + 1}">
+                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 3h8l1 2h4v2H3V5h4l1-2Zm-2 6h12l-1 12H7L6 9Zm3 2 .5 8h1L10 11H9Zm5 0-.5 8h1L15 11h-1Z"/></svg>
+              </button>
+            </div>
+
+            ${count > 1 ? `
+              <div class="history-nav is-hinting" aria-hidden="true">
+                <span class="history-arrow history-arrow--up ${hasPrevious ? 'is-available' : ''}">
+                  <svg viewBox="0 0 24 24"><path d="m7 14 5-5 5 5H7Z"/></svg>
+                </span>
+
+                <span class="history-dots">
+                  <i class="history-dot ${dotPosition === 0 ? 'is-current' : ''}"></i>
+                  <i class="history-dot ${dotPosition === 1 ? 'is-current' : ''}"></i>
+                  <i class="history-dot ${dotPosition === 2 ? 'is-current' : ''}"></i>
+                </span>
+
+                <span class="history-arrow history-arrow--down ${hasNext ? 'is-available' : ''}">
+                  <svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5H7Z"/></svg>
+                </span>
+              </div>
+            ` : `<div class="history-nav" aria-hidden="true"></div>`}
           </div>
         </div>
-        ${count > 1 ? `
-          <div class="history-pager is-hinting" aria-hidden="true">
-            <span class="history-dot"></span>
-            <span class="history-dot history-dot--active"></span>
-            <span class="history-dot"></span>
-          </div>
-        ` : `<div class="history-pager" aria-hidden="true"></div>`}
       `;
 
       fragment.appendChild(page);
@@ -266,18 +291,16 @@
 
     requestAnimationFrame(() => {
       const page = els.historyList.querySelector(`[data-history-index="${historyIndex}"]`);
-      if (page) {
-        els.historyList.scrollTop = page.offsetTop;
-      }
+      if (page) els.historyList.scrollTop = page.offsetTop;
     });
 
     if (count > 1) {
       clearTimeout(historyHintTimer);
       historyHintTimer = setTimeout(() => {
-        els.historyList.querySelectorAll('.history-pager').forEach((pager) => {
-          pager.classList.remove('is-hinting');
+        els.historyList.querySelectorAll('.history-nav').forEach((nav) => {
+          nav.classList.remove('is-hinting');
         });
-      }, 2600);
+      }, 2800);
     }
   }
 
@@ -600,7 +623,10 @@
         }
       });
 
-      historyIndex = nearestIndex;
+      if (nearestIndex !== historyIndex) {
+        historyIndex = nearestIndex;
+        renderHistory();
+      }
     }, 70);
   }, { passive: true });
 
