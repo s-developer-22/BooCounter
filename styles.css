@@ -24,20 +24,20 @@ html, body {
   margin: 0;
   min-width: 320px;
   min-height: 100%;
-  background: var(--paper);
+  background: #000000;
   color: var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-body { overscroll-behavior-y: none; }
-
-button, input { font: inherit; }
-
-button {
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+body {
+  padding:
+    calc(var(--safe-top) + 10px)
+    calc(var(--safe-right) + 12px)
+    calc(var(--safe-bottom) + 12px)
+    calc(var(--safe-left) + 12px);
+  overscroll-behavior-y: none;
 }
 
 button:focus-visible,
@@ -47,17 +47,19 @@ input:focus-visible {
 }
 
 .app {
-  width: min(100%, 560px);
+  width: min(calc(100% - 24px), 560px);
+  min-height: calc(100vh - var(--safe-top) - var(--safe-bottom) - 24px);
+  min-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 24px);
   margin: 0 auto;
-  padding:
-    calc(26px + var(--safe-top))
-    calc(22px + var(--safe-right))
-    calc(24px + var(--safe-bottom))
-    calc(22px + var(--safe-left));
+  padding: 28px 22px 24px;
+  border-radius: 34px;
   background:
     radial-gradient(circle at 8% 0%, rgba(198, 159, 213, .16), transparent 25rem),
     radial-gradient(circle at 95% 17%, rgba(253, 253, 201, .62), transparent 25rem),
     var(--paper);
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, .20),
+    0 1px 0 rgba(255,255,255,.06);
 }
 
 .topbar {
@@ -71,8 +73,8 @@ input:focus-visible {
   align-items: center;
   gap: 9px;
   color: var(--wisteria-deep);
-  font-size: 9px;
-  font-weight: 780;
+  font-size: 10px;
+  font-weight: 800;
   letter-spacing: .16em;
   text-transform: uppercase;
 }
@@ -107,7 +109,7 @@ input:focus-visible {
   padding: 4px 9px;
   border-radius: 999px;
   font-size: 9px;
-  font-weight: 820;
+  font-weight: 850;
   letter-spacing: .08em;
   text-transform: uppercase;
   white-space: nowrap;
@@ -129,9 +131,9 @@ input:focus-visible {
   gap: 4px;
   margin-top: 10px;
   min-width: 0;
-  font-size: 15px;
-  line-height: 1.15;
-  font-weight: 680;
+  font-size: 16px;
+  line-height: 1.1;
+  font-weight: 720;
   letter-spacing: -.02em;
 }
 
@@ -147,12 +149,12 @@ input:focus-visible {
   margin-top: 22px;
   color: var(--muted);
   font-size: 10px;
-  font-weight: 820;
+  font-weight: 850;
   letter-spacing: .08em;
 }
 
 .text-action {
-  margin: 6px auto 0;
+  margin: 8px auto 0;
   min-height: 40px;
   padding: 0 12px;
   border: 0;
@@ -163,8 +165,8 @@ input:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 7px;
-  font-size: 11px;
-  font-weight: 680;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .text-action svg {
@@ -177,7 +179,7 @@ input:focus-visible {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr);
   align-items: center;
-  min-height: 142px;
+  min-height: 148px;
   margin-top: 6px;
 }
 
@@ -191,20 +193,20 @@ input:focus-visible {
 .score {
   max-width: 100%;
   font-family: "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
-  font-size: clamp(56px, 18vw, 90px);
+  font-size: clamp(58px, 18.5vw, 94px);
   font-stretch: condensed;
-  font-weight: 820;
+  font-weight: 850;
   letter-spacing: -.075em;
   line-height: .9;
   color: #B2ADB4;
-  transform: scale(.92);
+  transform: scale(.90);
   transform-origin: center;
   transition: transform 170ms ease, color 170ms ease, opacity 170ms ease;
   font-variant-numeric: tabular-nums;
 }
 
 .score-side.leading .score {
-  transform: scale(1.035);
+  transform: scale(1.025);
   color: var(--ink);
 }
 
@@ -234,17 +236,17 @@ input:focus-visible {
 
 .lead {
   min-height: 22px;
-  margin: 0 0 22px;
+  margin: -2px 0 20px;
   text-align: center;
   color: #635D66;
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.35;
-  font-weight: 620;
+  font-weight: 640;
 }
 
 .primary-cta {
   width: 100%;
-  min-height: 54px;
+  min-height: 56px;
   border: 0;
   border-radius: 999px;
   background: var(--wisteria);
@@ -254,10 +256,10 @@ input:focus-visible {
   justify-content: center;
   gap: 11px;
   font-size: 13px;
-  font-weight: 820;
+  font-weight: 850;
   letter-spacing: .09em;
   text-transform: uppercase;
-  box-shadow: 0 10px 22px rgba(113, 68, 143, .15), inset 0 -1px 0 rgba(56, 32, 68, .09);
+  box-shadow: 0 10px 22px rgba(113, 68, 143, .14), inset 0 -1px 0 rgba(56, 32, 68, .09);
   transition: transform 110ms ease, filter 110ms ease;
 }
 
@@ -279,7 +281,7 @@ input:focus-visible {
 }
 
 .history {
-  margin-top: 60px;
+  margin-top: 58px;
 }
 
 .section-heading {
@@ -293,7 +295,7 @@ input:focus-visible {
 .section-kicker {
   color: var(--wisteria-deep);
   font-size: 11px;
-  font-weight: 820;
+  font-weight: 850;
   letter-spacing: .14em;
   text-transform: uppercase;
 }
@@ -309,7 +311,7 @@ input:focus-visible {
   border: 1px solid rgba(198, 159, 213, .18);
   border-radius: 22px;
   background: rgba(255,255,255,.82);
-  box-shadow: var(--shadow);
+  box-shadow: 0 6px 18px rgba(65, 39, 82, .06);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -328,7 +330,7 @@ input:focus-visible {
   border-bottom: 1px solid var(--line);
   color: #665D69;
   font-size: 8.5px;
-  font-weight: 820;
+  font-weight: 850;
   letter-spacing: .07em;
   text-transform: uppercase;
 }
@@ -363,7 +365,7 @@ input:focus-visible {
 .hand-cell b {
   display: block;
   font-size: 14px;
-  font-weight: 820;
+  font-weight: 850;
 }
 
 .hand-cell small {
@@ -433,7 +435,7 @@ input:focus-visible {
 
 .new-game {
   min-height: 48px;
-  margin: 28px auto 2px;
+  margin: 26px auto 2px;
   padding: 0 15px;
   border: 0;
   background: transparent;
@@ -441,8 +443,8 @@ input:focus-visible {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 11px;
-  font-weight: 680;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .new-game svg {
@@ -473,7 +475,7 @@ input:focus-visible {
 .sheet {
   position: relative;
   z-index: 1;
-  width: min(100%, 560px);
+  width: min(calc(100% - 24px), 560px);
   max-height: calc(100vh - 18px);
   max-height: calc(100dvh - 18px);
   margin: 0 auto;
@@ -518,7 +520,7 @@ input:focus-visible {
   margin-bottom: 5px;
   color: var(--wisteria-deep);
   font-size: 9px;
-  font-weight: 820;
+  font-weight: 850;
   letter-spacing: .14em;
   text-transform: uppercase;
 }
@@ -551,7 +553,7 @@ input:focus-visible {
 
 .hand-team-label {
   min-width: 0;
-  min-height: 54px;
+  min-height: 56px;
   padding: 0 3px 5px;
   display: grid;
   align-content: start;
@@ -561,7 +563,7 @@ input:focus-visible {
 
 .hand-team-label b {
   font-size: 9px;
-  font-weight: 820;
+  font-weight: 850;
   letter-spacing: .07em;
   text-transform: uppercase;
 }
@@ -581,7 +583,7 @@ input:focus-visible {
 .field-label {
   color: #6E6771;
   font-size: 10px;
-  font-weight: 820;
+  font-weight: 850;
   letter-spacing: .08em;
   text-transform: uppercase;
 }
@@ -718,7 +720,7 @@ input:focus-visible {
   padding: 0 5px;
   color: var(--ink);
   font-size: 11px;
-  font-weight: 820;
+  font-weight: 850;
   text-transform: uppercase;
 }
 
@@ -788,10 +790,10 @@ input:focus-visible {
 }
 
 @media (min-height: 760px) {
-  .topbar { padding-bottom: 34px; }
-  .scoreboard { margin-top: 10px; min-height: 150px; }
-  .lead { margin-bottom: 26px; }
-  .history { margin-top: 64px; }
+  .topbar { padding-bottom: 32px; }
+  .scoreboard { margin-top: 10px; min-height: 158px; }
+  .lead { margin-bottom: 24px; }
+  .history { margin-top: 62px; }
   .new-game { margin-top: 34px; }
 }
 
@@ -800,8 +802,8 @@ input:focus-visible {
     padding-top: calc(34px + var(--safe-top));
     padding-bottom: calc(30px + var(--safe-bottom));
   }
-  .topbar { padding-bottom: 38px; }
-  .scoreboard { margin-top: 12px; min-height: 154px; }
+  .topbar { padding-bottom: 50px; }
+  .scoreboard { margin-top: 12px; min-height: 164px; }
   .lead { margin-bottom: 28px; }
   .history { margin-top: 68px; }
 }
@@ -815,11 +817,11 @@ input:focus-visible {
   .topbar { padding-bottom: 28px; }
   .teams { grid-template-columns: minmax(0,1fr) 28px minmax(0,1fr); }
   .team { min-height: 88px; }
-  .team-names { font-size: 14px; }
-  .scoreboard { min-height: 134px; }
-  .score-side { height: 112px; }
+  .team-names { font-size: 15px; }
+  .scoreboard { min-height: 140px; }
+  .score-side { height: 118px; }
   .score-divider { height: 96px; }
-  .score { font-size: clamp(52px, 18vw, 80px); }
+  .score { font-size: clamp(54px, 18.5vw, 84px); }
   .history { margin-top: 44px; }
   .history-head,
   .history-row {
@@ -853,5 +855,38 @@ input:focus-visible {
     transition-duration: .01ms !important;
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+
+@media (max-width: 390px) {
+  body {
+    padding:
+      calc(var(--safe-top) + 8px)
+      calc(var(--safe-right) + 10px)
+      calc(var(--safe-bottom) + 10px)
+      calc(var(--safe-left) + 10px);
+  }
+
+  .app {
+    padding: 24px 15px 22px;
+    border-radius: 28px;
+    min-height: calc(100vh - var(--safe-top) - var(--safe-bottom) - 20px);
+    min-height: calc(100dvh - var(--safe-top) - var(--safe-bottom) - 20px);
+  }
+}
+
+@media (max-width: 350px) {
+  body {
+    padding:
+      calc(var(--safe-top) + 6px)
+      calc(var(--safe-right) + 8px)
+      calc(var(--safe-bottom) + 8px)
+      calc(var(--safe-left) + 8px);
+  }
+
+  .app {
+    padding: 22px 14px 20px;
+    border-radius: 26px;
   }
 }
