@@ -1,4 +1,4 @@
-const CACHE_NAME = 'booscore-v2.0.0';
+const CACHE_NAME = 'booscore-v3.0.1';
 
 const APP_SHELL = [
   './',
@@ -7,6 +7,11 @@ const APP_SHELL = [
   './app.js',
   './manifest.webmanifest',
   './favicon.svg',
+  './mascot-spade.png',
+  './mascot-heart.png',
+  './mascot-club.png',
+  './mascot-diamond.png',
+  './mascots-quartet.png',
   './apple-touch-icon.png',
   './icon-192.png',
   './icon-512.png',

@@ -214,11 +214,11 @@
     els.scoreSideB.classList.toggle('leading', score.b > score.a);
 
     if (score.a === score.b) {
-      els.leadText.innerHTML = '<span class="lead-dot"></span>Partita in parità';
+      els.leadText.innerHTML = '<img src="./mascot-spade.png" alt=""><span class="lead-star">★</span><span>Partita in parità</span>';
     } else {
       const side = score.a > score.b ? 1 : 2;
       const delta = Math.abs(score.a - score.b);
-      els.leadText.innerHTML = `<span class="lead-dot"></span>Squadra ${side} in vantaggio di ${delta}`;
+      els.leadText.innerHTML = `<img src="./mascot-spade.png" alt=""><span class="lead-star">★</span><span>Squadra ${side} in vantaggio${delta ? ` di ${delta}` : ''}</span>`;
     }
 
     const count = state.hands.length;
@@ -250,7 +250,7 @@
       row.innerHTML = `
         <span class="round-number">${index + 1}</span>
         <span class="history-score history-score--one"><i class="dot dot--one"></i>${signed(totalForHand(hand, 'a'))}</span>
-        <span class="history-score history-score--two"><i class="dot dot--two"></i>${signed(totalForHand(hand, 'b'))}</span>
+        <span class="history-score history-score--two"><i class="dot dot--two"></i>${totalForHand(hand, 'b')}</span>
         <span class="history-chevron" aria-hidden="true">›</span>`;
       fragment.appendChild(row);
     });
