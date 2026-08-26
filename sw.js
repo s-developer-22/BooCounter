@@ -1,4 +1,4 @@
-const CACHE_NAME = 'booscore-v3.1.1';
+const CACHE_NAME = 'booscore-v3.1.2';
 
 const APP_SHELL = [
   './',
