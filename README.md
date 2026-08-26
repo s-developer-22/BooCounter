@@ -1,50 +1,57 @@
-# BooScore! — PWA v2.0.0
+# BooScore! — PWA v3.1.0
 
-BooScore! è una PWA mobile-first per segnare i punti di una partita di Burraco, utilizzabile anche offline.
+Release finale di rifinitura grafica allineata ai mockup approvati e ottimizzata per iPhone in modalità PWA standalone.
 
-## Funzioni
-- 2 squadre da 2 giocatori
-- nomi modificabili tramite le matite nei riquadri squadra
-- inserimento BASE + CARTE per entrambe le squadre
-- valori positivi o negativi con controlli `− / +`
-- massimo 4 cifre per ciascun campo BASE/CARTE, senza zeri iniziali
-- totale mano e totale partita automatici
-- Home con punteggi, stato partita, ultima mano e accesso alla cronologia
-- pagina `Cronologia mani` con totale, ultima mano, numero di mani giocate ed elenco dinamico
-- modifica ed eliminazione di ogni mano tramite pannello dedicato
-- persistenza locale con IndexedDB (fallback localStorage)
-- funzionamento offline tramite Service Worker
-- viewport fisso: nessuno scroll della pagina; eventuale scroll resta confinato all’elenco della cronologia
-- nessun account o server
+## Vincoli mantenuti senza modifiche
+- sfondo esterno nero
+- pannello applicazione chiaro
+- angoli smussati esclusivamente nella parte superiore
+- stessa impronta/formato mobile della PWA esistente
+- pagina principale non scrollabile
+- nessuna modifica alla logica principale di gioco e alla persistenza locale
+- eventuale scorrimento confinato esclusivamente all’elenco della cronologia quando supera lo spazio disponibile
 
-## Struttura GitHub
-Carica i file direttamente nella root del repository:
+## Correzioni visuali v3.1.0
+- tipografia UI convertita alla stack nativa iPhone (`-apple-system` / SF Pro) e alleggerita nei pesi
+- gerarchie di testo ridimensionate e riallineate ai mockup
+- margini interni delle card uniformati
+- contenuti centrati verticalmente e orizzontalmente dove previsto
+- spazi tra Squadra 1 / Squadra 2, scoreboard, stato partita e CTA ribilanciati
+- punteggi ottimizzati fino a 4 cifre senza zeri iniziali
+- frecce di navigazione ridisegnate con SVG controllato, non più con glifo tipografico
+- Home: mascotte sotto i giocatori sostituite con due asset statici completi, senza arti tagliati
+- Aggiungi mano: proporzioni di header, mascotte, card, campi, info e CTA riallineate al template approvato
+- Cronologia: riepilogo, report, lista dinamica e empty state ridimensionati e riallineati
+- Modifica mano: bottom sheet ridimensionato, card più ariose, Base e Carte su due righe, azioni allineate e contenute correttamente
 
-- index.html
-- styles.css
-- app.js
-- manifest.webmanifest
-- sw.js
-- .nojekyll
-- favicon.svg
-- apple-touch-icon.png
-- icon-192.png
-- icon-512.png
-- icon-maskable-512.png
-- icon-source-1024.png
+## File da caricare su GitHub
+Tutti i file vanno caricati direttamente nella root del repository. Non è necessaria alcuna cartella.
 
-## Pubblicazione su GitHub Pages
-1. Carica/sostituisci i file nella root del repository.
-2. Apri **Settings → Pages**.
-3. In **Build and deployment** scegli `Deploy from a branch`.
-4. Seleziona `main` e `/ (root)`.
-5. Salva e attendi la pubblicazione.
+### Applicazione
+- `index.html`
+- `styles.css`
+- `app.js`
+- `manifest.webmanifest`
+- `sw.js`
+- `.nojekyll`
+- `favicon.svg`
 
-## Installazione su iPhone
-1. Apri l’URL GitHub Pages in Safari almeno una volta con connessione.
-2. Tocca **Condividi**.
-3. Seleziona **Aggiungi alla schermata Home**.
-4. Avvia `BooScore!` dalla Home.
+### Mascotte
+- `mascot-spade.png`
+- `mascots-team1.png`
+- `mascots-team2.png`
+- `mascots-quartet.png`
 
-## Nota aggiornamenti
-Il redesign BooScore! usa il cache name `booscore-v2.0.0` in `sw.js`. Per release future incrementare il valore del cache name.
+`mascots-team1.png` e `mascots-team2.png` sono le coppie statiche complete usate nella Home. Evitano i precedenti ritagli degli arti delle mascotte singole.
+
+### Icone PWA
+- `apple-touch-icon.png`
+- `icon-192.png`
+- `icon-512.png`
+- `icon-maskable-512.png`
+- `icon-source-1024.png`
+
+## Cache PWA
+Il Service Worker usa `booscore-v3.1.0`. I riferimenti a CSS e JavaScript includono inoltre la query `booscore-3.1.0`, così iPhone non dovrebbe riutilizzare la precedente grafica v3.0.1 dopo la pubblicazione.
+
+Dopo il deploy su GitHub Pages, se l’icona già installata mostra ancora una versione precedente, chiudere completamente la PWA e riaprirla dopo che GitHub Pages ha terminato il deploy. In caso di cache iOS particolarmente persistente, rimuovere e aggiungere nuovamente la PWA alla Home una sola volta.

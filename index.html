@@ -14,7 +14,7 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./apple-touch-icon.png">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css?v=booscore-3">
+  <link rel="stylesheet" href="./styles.css?v=booscore-3.1.0">
 </head>
 <body>
   <main class="app" id="app">
@@ -40,8 +40,7 @@
           <span class="team-chip team-chip--one">Squadra 1</span>
           <div class="team-names"><span id="playerNameA1">Matteo</span><span id="playerNameA2">Alessio</span></div>
           <div class="team-mascots" aria-hidden="true">
-            <img src="./mascot-spade.png" alt="">
-            <img src="./mascot-heart.png" alt="">
+            <img src="./mascots-team1.png" alt="">
           </div>
         </article>
 
@@ -54,8 +53,7 @@
           <span class="team-chip team-chip--two">Squadra 2</span>
           <div class="team-names"><span id="playerNameB1">Martina</span><span id="playerNameB2">Giulia</span></div>
           <div class="team-mascots" aria-hidden="true">
-            <img src="./mascot-club.png" alt="">
-            <img src="./mascot-diamond.png" alt="">
+            <img src="./mascots-team2.png" alt="">
           </div>
         </article>
       </section>
@@ -92,7 +90,7 @@
     <!-- AGGIUNGI MANO -->
     <section class="view view--hand" id="handView" aria-label="Aggiungi mano" hidden>
       <header class="page-header">
-        <button class="back-btn" id="handBackBtn" type="button" aria-label="Torna alla partita">←</button>
+        <button class="back-btn" id="handBackBtn" type="button" aria-label="Torna alla partita"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.5 8.5 12 15 18.5"/></svg></button>
         <h1>Aggiungi mano</h1>
         <span class="header-spacer"></span>
       </header>
@@ -135,7 +133,7 @@
     <!-- CRONOLOGIA -->
     <section class="view view--history" id="historyView" aria-label="Cronologia mani" hidden>
       <header class="page-header history-header">
-        <button class="back-btn" id="historyBackBtn" type="button" aria-label="Torna alla partita">←</button>
+        <button class="back-btn" id="historyBackBtn" type="button" aria-label="Torna alla partita"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5.5 8.5 12 15 18.5"/></svg></button>
         <h1>Cronologia mani</h1>
         <span class="header-spacer"></span>
       </header>
@@ -206,6 +204,6 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-  <script src="./app.js?v=booscore-3" defer></script>
+  <script src="./app.js?v=booscore-3.1.0" defer></script>
 </body>
 </html>

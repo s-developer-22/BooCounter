@@ -217,8 +217,7 @@
       els.leadText.innerHTML = '<img src="./mascot-spade.png" alt=""><span class="lead-star">★</span><span>Partita in parità</span>';
     } else {
       const side = score.a > score.b ? 1 : 2;
-      const delta = Math.abs(score.a - score.b);
-      els.leadText.innerHTML = `<img src="./mascot-spade.png" alt=""><span class="lead-star">★</span><span>Squadra ${side} in vantaggio${delta ? ` di ${delta}` : ''}</span>`;
+      els.leadText.innerHTML = `<img src="./mascot-spade.png" alt=""><span class="lead-star">★</span><span>Squadra ${side} in vantaggio</span>`;
     }
 
     const count = state.hands.length;
