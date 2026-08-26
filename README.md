@@ -1,9 +1,13 @@
-# BooScore! v3.1.2 — aggiornamento icona app
+# BooScore! v3.1.2 — nuova icona
 
-Questa versione aggiorna l'icona della PWA con la nuova grafica approvata delle 4 mascotte.
+Questo aggiornamento sostituisce esclusivamente l'icona PWA con la nuova versione approvata:
+- sfondo beige chiaro pieno;
+- quattro mascotte dei semi;
+- coriandoli colorati;
+- nessun bordo/sfondo nero nell'immagine sorgente.
 
-## File da caricare su GitHub
-Carica/sostituisci questi file nella root del repository:
+## File da sostituire nella root di GitHub
+Carica questi file tutti allo stesso livello di `index.html`:
 
 - `apple-touch-icon.png`
 - `icon-192.png`
@@ -12,13 +16,12 @@ Carica/sostituisci questi file nella root del repository:
 - `icon-source-1024.png`
 - `sw.js`
 
-## Importante per vedere la nuova icona su iPhone
-Se l'app è già stata aggiunta alla Home, iOS può continuare a mostrare l'icona precedente dalla cache.
+Non sono necessarie cartelle e non serve modificare gli altri file della PWA.
 
-Procedura consigliata:
-1. aggiorna i file su GitHub;
-2. apri il sito aggiornato in Safari;
-3. se l'icona in Home non cambia subito, rimuovi BooScore! dalla Home;
-4. aggiungi di nuovo l'app alla Home.
+## iPhone: visualizzare la nuova icona
+L'icona Home può rimanere memorizzata da iOS anche dopo il deploy. Dopo aver aggiornato GitHub:
+1. apri BooScore! in Safari una volta;
+2. se l'icona Home non cambia, elimina solo il collegamento/app dalla schermata Home;
+3. aggiungi nuovamente BooScore! tramite **Condividi → Aggiungi alla schermata Home**.
 
-Non è necessario modificare altri file della PWA per questo aggiornamento.
+La cache del service worker è aggiornata a `booscore-v3.1.2`.
