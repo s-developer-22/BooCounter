@@ -1,4 +1,4 @@
-# BooScore! — PWA v3.1.0
+# BooScore! — PWA v3.1.1
 
 Release finale di rifinitura grafica allineata ai mockup approvati e ottimizzata per iPhone in modalità PWA standalone.
 
@@ -11,7 +11,7 @@ Release finale di rifinitura grafica allineata ai mockup approvati e ottimizzata
 - nessuna modifica alla logica principale di gioco e alla persistenza locale
 - eventuale scorrimento confinato esclusivamente all’elenco della cronologia quando supera lo spazio disponibile
 
-## Correzioni visuali v3.1.0
+## Correzioni visuali v3.1.1
 - tipografia UI convertita alla stack nativa iPhone (`-apple-system` / SF Pro) e alleggerita nei pesi
 - gerarchie di testo ridimensionate e riallineate ai mockup
 - margini interni delle card uniformati
@@ -52,6 +52,13 @@ Tutti i file vanno caricati direttamente nella root del repository. Non è neces
 - `icon-source-1024.png`
 
 ## Cache PWA
-Il Service Worker usa `booscore-v3.1.0`. I riferimenti a CSS e JavaScript includono inoltre la query `booscore-3.1.0`, così iPhone non dovrebbe riutilizzare la precedente grafica v3.0.1 dopo la pubblicazione.
+Il Service Worker usa `booscore-v3.1.1`. I riferimenti a CSS e JavaScript includono inoltre la query `booscore-3.1.0`, così iPhone non dovrebbe riutilizzare la precedente grafica v3.0.1 dopo la pubblicazione.
 
 Dopo il deploy su GitHub Pages, se l’icona già installata mostra ancora una versione precedente, chiudere completamente la PWA e riaprirla dopo che GitHub Pages ha terminato il deploy. In caso di cache iOS particolarmente persistente, rimuovere e aggiungere nuovamente la PWA alla Home una sola volta.
+
+
+## v3.1.1 — micro-polish Home
+- ridotto il peso tipografico dei nomi giocatori;
+- ridotto il peso tipografico dei punteggi principali;
+- matite di modifica giocatori rese più piccole e discrete;
+- mascotte delle due squadre ingrandite mantenendo l’intera figura visibile.
