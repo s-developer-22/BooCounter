@@ -1,25 +1,24 @@
-# Counter Burraco — PWA v1.1
+# BooScore! — PWA v2.0.0
 
-PWA mobile-first per segnare i punti di una partita di Burraco.
+BooScore! è una PWA mobile-first per segnare i punti di una partita di Burraco, utilizzabile anche offline.
 
 ## Funzioni
 - 2 squadre da 2 giocatori
-- nomi modificabili
-- nomi mostrati su due righe, senza punteggiatura
+- nomi modificabili tramite le matite nei riquadri squadra
 - inserimento BASE + CARTE per entrambe le squadre
-- controllo dedicato `+ / −` per i valori negativi su iPhone
+- valori positivi o negativi con controlli `− / +`
+- massimo 4 cifre per ciascun campo BASE/CARTE, senza zeri iniziali
 - totale mano e totale partita automatici
-- storico della sola partita corrente
-- storico con intestazioni `Squadra 1` e `Squadra 2`
-- modifica ed eliminazione delle mani
+- Home con punteggi, stato partita, ultima mano e accesso alla cronologia
+- pagina `Cronologia mani` con totale, ultima mano, numero di mani giocate ed elenco dinamico
+- modifica ed eliminazione di ogni mano tramite pannello dedicato
 - persistenza locale con IndexedDB (fallback localStorage)
 - funzionamento offline tramite Service Worker
-- nessun account, server o archivio delle partite terminate
+- viewport fisso: nessuno scroll della pagina; eventuale scroll resta confinato all’elenco della cronologia
+- nessun account o server
 
 ## Struttura GitHub
-Tutti i file sono già “sciolti”: non serve creare cartelle dal telefono.
-
-Carica nella root del repository:
+Carica i file direttamente nella root del repository:
 
 - index.html
 - styles.css
@@ -34,23 +33,18 @@ Carica nella root del repository:
 - icon-maskable-512.png
 - icon-source-1024.png
 
-Puoi caricare anche README.md.
-
 ## Pubblicazione su GitHub Pages
-1. Crea/apri il repository GitHub.
-2. Carica tutti i file del pacchetto direttamente nella root.
-3. Apri **Settings → Pages**.
-4. In **Build and deployment** scegli `Deploy from a branch`.
-5. Seleziona `main` e `/ (root)`.
-6. Salva e attendi la pubblicazione.
+1. Carica/sostituisci i file nella root del repository.
+2. Apri **Settings → Pages**.
+3. In **Build and deployment** scegli `Deploy from a branch`.
+4. Seleziona `main` e `/ (root)`.
+5. Salva e attendi la pubblicazione.
 
 ## Installazione su iPhone
-1. Apri l'URL GitHub Pages in Safari almeno una volta con connessione.
+1. Apri l’URL GitHub Pages in Safari almeno una volta con connessione.
 2. Tocca **Condividi**.
 3. Seleziona **Aggiungi alla schermata Home**.
-4. Avvia `Counter Burraco` dalla Home.
-
-Dopo il primo caricamento l'app è disponibile anche offline.
+4. Avvia `BooScore!` dalla Home.
 
 ## Nota aggiornamenti
-Quando modifichi i file dell'app, incrementa `CACHE_NAME` in `sw.js`.
+Il redesign BooScore! usa il cache name `booscore-v2.0.0` in `sw.js`. Per release future incrementare il valore del cache name.

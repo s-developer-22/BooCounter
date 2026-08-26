@@ -6,6 +6,7 @@
     hands: []
   });
 
+  // Keep the original storage identifiers so existing users do not lose a saved match.
   const DB_NAME = 'counter-burraco-db';
   const DB_VERSION = 1;
   const STORE = 'app';
@@ -15,70 +16,83 @@
   let state = cloneDefault();
   let editingIndex = null;
   let confirmAction = null;
-  let lastFocusedElement = null;
+  let currentModal = null;
   let toastTimer = null;
-  let historyIndex = 0;
-  let historyHintTimer = null;
-  let historyScrollTimer = null;
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
 
   const els = {
+    homeView: $('#homeView'),
+    handView: $('#handView'),
+    historyView: $('#historyView'),
     playerNameA1: $('#playerNameA1'),
     playerNameA2: $('#playerNameA2'),
     playerNameB1: $('#playerNameB1'),
     playerNameB2: $('#playerNameB2'),
-    sheetTeamA1: $('#sheetTeamA1'),
-    sheetTeamA2: $('#sheetTeamA2'),
-    sheetTeamB1: $('#sheetTeamB1'),
-    sheetTeamB2: $('#sheetTeamB2'),
     scoreA: $('#scoreA'),
     scoreB: $('#scoreB'),
     scoreSideA: $('#scoreSideA'),
     scoreSideB: $('#scoreSideB'),
     leadText: $('#leadText'),
-    handCount: $('#handCount'),
-    historyList: $('#historyList'),
+    homeHandCount: $('#homeHandCount'),
+    homeLastHand: $('#homeLastHand'),
     addHandBtn: $('#addHandBtn'),
-    editPlayersBtn: $('#editPlayersBtn'),
+    openHistoryBtn: $('#openHistoryBtn'),
     newGameBtn: $('#newGameBtn'),
-    sheetLayer: $('#sheetLayer'),
-    sheetScrim: $('#sheetScrim'),
-    handSheet: $('#handSheet'),
+    handBackBtn: $('#handBackBtn'),
+    cancelAddHandBtn: $('#cancelAddHandBtn'),
+    historyBackBtn: $('#historyBackBtn'),
+    addHandForm: $('#addHandForm'),
+    addBaseA: $('#addBaseA'),
+    addCardsA: $('#addCardsA'),
+    addBaseB: $('#addBaseB'),
+    addCardsB: $('#addCardsB'),
+    historyScoreA: $('#historyScoreA'),
+    historyScoreB: $('#historyScoreB'),
+    historyLastHand: $('#historyLastHand'),
+    historyHandCount: $('#historyHandCount'),
+    historyList: $('#historyList'),
+    modalLayer: $('#modalLayer'),
+    modalScrim: $('#modalScrim'),
     playersSheet: $('#playersSheet'),
+    editHandSheet: $('#editHandSheet'),
     confirmSheet: $('#confirmSheet'),
-    handSheetTitle: $('#handSheetTitle'),
-    confirmHandBtn: $('#confirmHandBtn'),
-    handForm: $('#handForm'),
     playersForm: $('#playersForm'),
-    baseA: $('#baseA'),
-    cardsA: $('#cardsA'),
-    baseB: $('#baseB'),
-    cardsB: $('#cardsB'),
-    signBaseA: $('#signBaseA'),
-    signCardsA: $('#signCardsA'),
-    signBaseB: $('#signBaseB'),
-    signCardsB: $('#signCardsB'),
-    handTotalA: $('#handTotalA'),
-    handTotalB: $('#handTotalB'),
     playerA1: $('#playerA1'),
     playerA2: $('#playerA2'),
     playerB1: $('#playerB1'),
     playerB2: $('#playerB2'),
-    confirmKicker: $('#confirmKicker'),
+    editHandTitle: $('#editHandTitle'),
+    editHandForm: $('#editHandForm'),
+    editBaseA: $('#editBaseA'),
+    editCardsA: $('#editCardsA'),
+    editBaseB: $('#editBaseB'),
+    editCardsB: $('#editCardsB'),
+    deleteHandBtn: $('#deleteHandBtn'),
     confirmTitle: $('#confirmTitle'),
     confirmText: $('#confirmText'),
     confirmDangerBtn: $('#confirmDangerBtn'),
     toast: $('#toast')
   };
 
-  const signedFields = [
-    [els.baseA, els.signBaseA],
-    [els.cardsA, els.signCardsA],
-    [els.baseB, els.signBaseB],
-    [els.cardsB, els.signCardsB]
+  const addFields = [
+    signedConfig('addBaseA', 'addBaseAMinus', 'addBaseAPlus'),
+    signedConfig('addCardsA', 'addCardsAMinus', 'addCardsAPlus'),
+    signedConfig('addBaseB', 'addBaseBMinus', 'addBaseBPlus'),
+    signedConfig('addCardsB', 'addCardsBMinus', 'addCardsBPlus')
   ];
+
+  const editFields = [
+    signedConfig('editBaseA', 'editBaseAMinus', 'editBaseAPlus'),
+    signedConfig('editCardsA', 'editCardsAMinus', 'editCardsAPlus'),
+    signedConfig('editBaseB', 'editBaseBMinus', 'editBaseBPlus'),
+    signedConfig('editCardsB', 'editCardsBMinus', 'editCardsBPlus')
+  ];
+
+  function signedConfig(inputId, minusId, plusId) {
+    return { input: $(`#${inputId}`), minus: $(`#${minusId}`), plus: $(`#${plusId}`) };
+  }
 
   function cloneDefault() {
     return { players: { ...DEFAULT_STATE.players }, hands: [] };
@@ -92,40 +106,49 @@
   function safeInt(value) {
     const n = Number(value);
     if (!Number.isFinite(n)) return 0;
-    return Math.max(-99999, Math.min(99999, Math.trunc(n)));
+    return Math.max(-9999, Math.min(9999, Math.trunc(n)));
   }
 
   function normalizeMagnitude(value) {
-    const digits = String(value ?? '').replace(/[^\d]/g, '').slice(0, 5);
+    const digits = String(value ?? '').replace(/[^\d]/g, '').slice(0, 4);
     if (!digits) return 0;
-    return Math.min(99999, Number(digits));
-  }
-
-  function readSignedField(input, toggle) {
-    const magnitude = normalizeMagnitude(input.value);
-    const sign = toggle.dataset.sign === '-1' ? -1 : 1;
-    return magnitude * sign;
-  }
-
-  function setSignedField(input, toggle, value) {
-    const n = safeInt(value);
-    toggle.dataset.sign = n < 0 ? '-1' : '1';
-    toggle.textContent = n < 0 ? '−' : '+';
-    toggle.setAttribute('aria-pressed', n < 0 ? 'true' : 'false');
-    input.value = String(Math.abs(n));
+    return Math.min(9999, Number(digits));
   }
 
   function sanitizeMagnitudeInput(input) {
-    const magnitude = normalizeMagnitude(input.value);
-    input.value = String(magnitude);
+    const digits = String(input.value ?? '').replace(/[^\d]/g, '').slice(0, 4);
+    input.value = digits ? String(Math.min(9999, Number(digits))) : '';
+  }
+
+  function setField(config, value) {
+    const n = safeInt(value);
+    config.input.dataset.sign = n < 0 ? '-1' : '1';
+    config.input.value = String(Math.abs(n));
+    syncSignButtons(config);
+  }
+
+  function setSign(config, sign) {
+    config.input.dataset.sign = sign < 0 ? '-1' : '1';
+    syncSignButtons(config);
+  }
+
+  function syncSignButtons(config) {
+    const negative = config.input.dataset.sign === '-1';
+    config.minus.classList.toggle('is-active', negative);
+    config.plus.classList.toggle('is-active', !negative);
+    config.minus.setAttribute('aria-pressed', negative ? 'true' : 'false');
+    config.plus.setAttribute('aria-pressed', negative ? 'false' : 'true');
+  }
+
+  function readField(config) {
+    const magnitude = normalizeMagnitude(config.input.value);
+    return magnitude * (config.input.dataset.sign === '-1' ? -1 : 1);
   }
 
   function normalizeState(value) {
     if (!value || typeof value !== 'object') return cloneDefault();
-
     const p = value.players || {};
     const hands = Array.isArray(value.hands) ? value.hands.slice(-200) : [];
-
     return {
       players: {
         a1: cleanName(p.a1 ?? DEFAULT_STATE.players.a1),
@@ -143,27 +166,34 @@
   }
 
   function totalForHand(hand, side) {
-    return side === 'a'
-      ? hand.baseA + hand.cardsA
-      : hand.baseB + hand.cardsB;
+    return side === 'a' ? hand.baseA + hand.cardsA : hand.baseB + hand.cardsB;
   }
 
   function totals() {
-    let a = 0;
-    let b = 0;
-
-    for (const hand of state.hands) {
-      a += totalForHand(hand, 'a');
-      b += totalForHand(hand, 'b');
-    }
-
-    return { a, b };
+    return state.hands.reduce((acc, hand) => {
+      acc.a += totalForHand(hand, 'a');
+      acc.b += totalForHand(hand, 'b');
+      return acc;
+    }, { a: 0, b: 0 });
   }
 
-  function teamLabel(side) {
-    return side === 'a'
-      ? `${state.players.a1} e ${state.players.a2}`
-      : `${state.players.b1} e ${state.players.b2}`;
+  function signed(value) {
+    return value > 0 ? `+${value}` : String(value);
+  }
+
+  function setNumericSize(element, value) {
+    const digits = String(Math.abs(Number(value) || 0)).length + (Number(value) < 0 ? 1 : 0);
+    element.classList.toggle('is-four', digits === 4);
+    element.classList.toggle('is-five', digits >= 5);
+  }
+
+  function latestHandCopy() {
+    const hand = state.hands.at(-1);
+    if (!hand) return 'Nessuna mano giocata';
+    const a = totalForHand(hand, 'a');
+    const b = totalForHand(hand, 'b');
+    if (a === b) return `Parità: ${signed(a)} ciascuno`;
+    return a > b ? `Squadra 1 ha fatto ${signed(a)}` : `Squadra 2 ha fatto ${signed(b)}`;
   }
 
   function renderNames() {
@@ -171,245 +201,163 @@
     els.playerNameA2.textContent = state.players.a2;
     els.playerNameB1.textContent = state.players.b1;
     els.playerNameB2.textContent = state.players.b2;
-
-    els.sheetTeamA1.textContent = state.players.a1;
-    els.sheetTeamA2.textContent = state.players.a2;
-    els.sheetTeamB1.textContent = state.players.b1;
-    els.sheetTeamB2.textContent = state.players.b2;
   }
 
-  function render() {
+  function renderHome() {
     renderNames();
-
     const score = totals();
-
     els.scoreA.textContent = score.a;
     els.scoreB.textContent = score.b;
-
+    setNumericSize(els.scoreA, score.a);
+    setNumericSize(els.scoreB, score.b);
     els.scoreSideA.classList.toggle('leading', score.a > score.b);
     els.scoreSideB.classList.toggle('leading', score.b > score.a);
 
     if (score.a === score.b) {
-      els.leadText.textContent = 'Partita in parità';
+      els.leadText.innerHTML = '<span class="lead-dot"></span>Partita in parità';
     } else {
-      const leader = score.a > score.b ? teamLabel('a') : teamLabel('b');
+      const side = score.a > score.b ? 1 : 2;
       const delta = Math.abs(score.a - score.b);
-      els.leadText.textContent = `${leader} avanti di ${delta}`;
+      els.leadText.innerHTML = `<span class="lead-dot"></span>Squadra ${side} in vantaggio di ${delta}`;
     }
 
     const count = state.hands.length;
-    els.handCount.textContent = `${count} ${count === 1 ? 'giocata' : 'giocate'}`;
-
-    renderHistory();
+    els.homeHandCount.textContent = `${count} ${count === 1 ? 'giocata' : 'giocate'}`;
+    els.homeLastHand.textContent = latestHandCopy();
   }
 
   function renderHistory() {
-    const count = state.hands.length;
+    const score = totals();
+    els.historyScoreA.textContent = score.a;
+    els.historyScoreB.textContent = score.b;
+    setNumericSize(els.historyScoreA, score.a);
+    setNumericSize(els.historyScoreB, score.b);
+    els.historyLastHand.textContent = latestHandCopy();
+    els.historyHandCount.textContent = String(state.hands.length);
 
-    if (!count) {
-      historyIndex = 0;
-      els.historyList.innerHTML = `
-        <div class="empty-state">
-          <p>Nessuna mano inserita.</p>
-        </div>`;
+    if (!state.hands.length) {
+      els.historyList.innerHTML = '<div class="history-empty">Nessuna mano giocata</div>';
       return;
     }
 
-    historyIndex = Math.max(0, Math.min(historyIndex, count - 1));
-
     const fragment = document.createDocumentFragment();
-
     state.hands.forEach((hand, index) => {
-      const page = document.createElement('section');
-      page.className = 'history-page';
-      page.dataset.historyIndex = String(index);
-
-      const scoreA = totalForHand(hand, 'a');
-      const scoreB = totalForHand(hand, 'b');
-      const hasPrevious = index > 0;
-      const hasNext = index < count - 1;
-
-      page.innerHTML = `
-        <div class="history-row">
-          <span class="round-number">${index + 1}</span>
-
-          <div class="hand-cell">
-            <b>${scoreA}</b>
-            <small>${hand.baseA} + ${hand.cardsA}</small>
-          </div>
-
-          <div class="hand-cell">
-            <b>${scoreB}</b>
-            <small>${hand.baseB} + ${hand.cardsB}</small>
-          </div>
-
-          <div class="history-side-controls">
-            <div class="row-actions">
-              <button class="icon-btn" type="button" data-edit-hand="${index}" aria-label="Modifica mano ${index + 1}">
-                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 17.3V21h3.7L18.6 10.1l-3.7-3.7L4 17.3Zm2 1.2 8.9-8.9 1 1-8.9 8.9H6v-1Zm13.7-11.2a1 1 0 0 0 0-1.4l-1.6-1.6a1 1 0 0 0-1.4 0l-1 1 3.7 3.7 1-1Z"/></svg>
-              </button>
-              <button class="icon-btn icon-btn--danger" type="button" data-delete-hand="${index}" aria-label="Elimina mano ${index + 1}">
-                <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 3h8l1 2h4v2H3V5h4l1-2Zm-2 6h12l-1 12H7L6 9Zm3 2 .5 8h1L10 11H9Zm5 0-.5 8h1L15 11h-1Z"/></svg>
-              </button>
-            </div>
-
-            ${count > 1 ? `
-              <div class="history-nav is-hinting" aria-hidden="true">
-                <span class="history-arrow history-arrow--up ${hasPrevious ? 'is-available' : ''}">
-                  <svg viewBox="0 0 24 24"><path d="m7 14 5-5 5 5H7Z"/></svg>
-                </span>
-
-                <span class="history-arrow history-arrow--down ${hasNext ? 'is-available' : ''}">
-                  <svg viewBox="0 0 24 24"><path d="m7 10 5 5 5-5H7Z"/></svg>
-                </span>
-              </div>
-            ` : `<div class="history-nav" aria-hidden="true"></div>`}
-          </div>
-        </div>
-      `;
-
-      fragment.appendChild(page);
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'history-row';
+      row.dataset.editHand = String(index);
+      row.setAttribute('aria-label', `Modifica mano ${index + 1}`);
+      row.innerHTML = `
+        <span class="round-number">${index + 1}</span>
+        <span class="history-score history-score--one"><i class="dot dot--one"></i>${signed(totalForHand(hand, 'a'))}</span>
+        <span class="history-score history-score--two"><i class="dot dot--two"></i>${signed(totalForHand(hand, 'b'))}</span>
+        <span class="history-chevron" aria-hidden="true">›</span>`;
+      fragment.appendChild(row);
     });
-
     els.historyList.replaceChildren(fragment);
+  }
 
-    requestAnimationFrame(() => {
-      const page = els.historyList.querySelector(`[data-history-index="${historyIndex}"]`);
-      if (page) els.historyList.scrollTop = page.offsetTop;
+  function renderAll() {
+    renderHome();
+    renderHistory();
+  }
+
+  function showView(name) {
+    const map = { home: els.homeView, hand: els.handView, history: els.historyView };
+    Object.entries(map).forEach(([key, view]) => {
+      const active = key === name;
+      view.hidden = !active;
+      view.classList.toggle('is-active', active);
+      view.setAttribute('aria-hidden', active ? 'false' : 'true');
     });
 
-    if (count > 1) {
-      clearTimeout(historyHintTimer);
-      historyHintTimer = setTimeout(() => {
-        els.historyList.querySelectorAll('.history-nav').forEach((nav) => {
-          nav.classList.remove('is-hinting');
-        });
-      }, 2800);
+    if (name === 'history' && state.hands.length) {
+      requestAnimationFrame(() => { els.historyList.scrollTop = els.historyList.scrollHeight; });
     }
   }
 
-  function updateHandPreview() {
-    els.handTotalA.textContent =
-      readSignedField(els.baseA, els.signBaseA) +
-      readSignedField(els.cardsA, els.signCardsA);
-
-    els.handTotalB.textContent =
-      readSignedField(els.baseB, els.signBaseB) +
-      readSignedField(els.cardsB, els.signCardsB);
+  function resetAddForm() {
+    addFields.forEach((field) => setField(field, 0));
   }
 
-  function toggleSign(toggle) {
-    const nextNegative = toggle.dataset.sign !== '-1';
-    toggle.dataset.sign = nextNegative ? '-1' : '1';
-    toggle.textContent = nextNegative ? '−' : '+';
-    toggle.setAttribute('aria-pressed', nextNegative ? 'true' : 'false');
-    updateHandPreview();
+  function openAddHand() {
+    resetAddForm();
+    showView('hand');
   }
 
-  function openSheet(sheet) {
-    lastFocusedElement = document.activeElement;
-    els.sheetLayer.hidden = false;
-
-    for (const current of [els.handSheet, els.playersSheet, els.confirmSheet]) {
-      current.hidden = current !== sheet;
-    }
-
-    document.body.style.overflow = 'hidden';
-
-    requestAnimationFrame(() => {
-      const focusTarget = sheet.querySelector('input, button:not([data-close-sheet])');
-      focusTarget?.focus({ preventScroll: true });
-    });
-  }
-
-  function closeSheets() {
-    els.sheetLayer.hidden = true;
-    els.handSheet.hidden = true;
-    els.playersSheet.hidden = true;
-    els.confirmSheet.hidden = true;
-    document.body.style.overflow = '';
-    confirmAction = null;
-    lastFocusedElement?.focus?.({ preventScroll: true });
-    lastFocusedElement = null;
-  }
-
-  function openHandSheet(index = null) {
-    editingIndex = Number.isInteger(index) ? index : null;
-
-    if (editingIndex === null) {
-      els.handSheetTitle.textContent = 'Nuova mano';
-      els.confirmHandBtn.textContent = 'Conferma mano';
-
-      setSignedField(els.baseA, els.signBaseA, 0);
-      setSignedField(els.cardsA, els.signCardsA, 0);
-      setSignedField(els.baseB, els.signBaseB, 0);
-      setSignedField(els.cardsB, els.signCardsB, 0);
-    } else {
-      const hand = state.hands[editingIndex];
-      if (!hand) return;
-
-      els.handSheetTitle.textContent = `Modifica mano ${editingIndex + 1}`;
-      els.confirmHandBtn.textContent = 'Salva modifica';
-
-      setSignedField(els.baseA, els.signBaseA, hand.baseA);
-      setSignedField(els.cardsA, els.signCardsA, hand.cardsA);
-      setSignedField(els.baseB, els.signBaseB, hand.baseB);
-      setSignedField(els.cardsB, els.signCardsB, hand.cardsB);
-    }
-
-    updateHandPreview();
-    openSheet(els.handSheet);
-  }
-
-  function openPlayersSheet() {
+  function openPlayers() {
     els.playerA1.value = state.players.a1;
     els.playerA2.value = state.players.a2;
     els.playerB1.value = state.players.b1;
     els.playerB2.value = state.players.b2;
-    openSheet(els.playersSheet);
+    openModal(els.playersSheet);
   }
 
-  function openConfirmation({ kicker, title, text, buttonText, action }) {
-    els.confirmKicker.textContent = kicker;
+  function openEditHand(index) {
+    if (!Number.isInteger(index) || !state.hands[index]) return;
+    editingIndex = index;
+    const hand = state.hands[index];
+    els.editHandTitle.textContent = `Modifica mano ${index + 1}`;
+    setField(editFields[0], hand.baseA);
+    setField(editFields[1], hand.cardsA);
+    setField(editFields[2], hand.baseB);
+    setField(editFields[3], hand.cardsB);
+    openModal(els.editHandSheet);
+  }
+
+  function openConfirmation({ title, text, buttonText, action }) {
+    confirmAction = action;
     els.confirmTitle.textContent = title;
     els.confirmText.textContent = text;
     els.confirmDangerBtn.textContent = buttonText;
-    confirmAction = action;
-    openSheet(els.confirmSheet);
+    openModal(els.confirmSheet);
+  }
+
+  function openModal(sheet) {
+    currentModal = sheet;
+    els.modalLayer.hidden = false;
+    [els.playersSheet, els.editHandSheet, els.confirmSheet].forEach((item) => { item.hidden = item !== sheet; });
+    requestAnimationFrame(() => sheet.querySelector('input, button')?.focus({ preventScroll: true }));
+  }
+
+  function closeModal() {
+    els.modalLayer.hidden = true;
+    [els.playersSheet, els.editHandSheet, els.confirmSheet].forEach((item) => { item.hidden = true; });
+    currentModal = null;
+    confirmAction = null;
+  }
+
+  function bindSignedConfig(config) {
+    config.input.dataset.sign = '1';
+    syncSignButtons(config);
+    config.minus.addEventListener('click', () => setSign(config, -1));
+    config.plus.addEventListener('click', () => setSign(config, 1));
+    config.input.addEventListener('input', () => sanitizeMagnitudeInput(config.input));
+    config.input.addEventListener('blur', () => { if (config.input.value === '') config.input.value = '0'; });
+    config.input.addEventListener('focus', () => requestAnimationFrame(() => config.input.select()));
   }
 
   function showToast(message) {
     clearTimeout(toastTimer);
     els.toast.textContent = message;
     els.toast.hidden = false;
-
-    toastTimer = setTimeout(() => {
-      els.toast.hidden = true;
-    }, 1500);
+    toastTimer = setTimeout(() => { els.toast.hidden = true; }, 1500);
   }
 
   async function persistAndRender(message) {
-    render();
+    renderAll();
     await saveState(state);
     if (message) showToast(message);
   }
 
   function openDb() {
     return new Promise((resolve, reject) => {
-      if (!('indexedDB' in window)) {
-        reject(new Error('IndexedDB non disponibile'));
-        return;
-      }
-
+      if (!('indexedDB' in window)) return reject(new Error('IndexedDB non disponibile'));
       const request = indexedDB.open(DB_NAME, DB_VERSION);
-
       request.onupgradeneeded = () => {
         const db = request.result;
-        if (!db.objectStoreNames.contains(STORE)) {
-          db.createObjectStore(STORE);
-        }
+        if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE);
       };
-
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error || new Error('Errore IndexedDB'));
     });
@@ -425,220 +373,133 @@
         request.onerror = () => reject(request.error);
       });
       db.close();
-
       if (value) return normalizeState(value);
     } catch (_) {}
-
     try {
       const raw = localStorage.getItem(FALLBACK_KEY);
       if (raw) return normalizeState(JSON.parse(raw));
     } catch (_) {}
-
     return cloneDefault();
   }
 
   async function saveState(value) {
     const normalized = normalizeState(value);
-
     try {
       const db = await openDb();
-
       await new Promise((resolve, reject) => {
         const tx = db.transaction(STORE, 'readwrite');
         tx.objectStore(STORE).put(normalized, STATE_KEY);
-        tx.oncomplete = () => resolve();
+        tx.oncomplete = resolve;
         tx.onerror = () => reject(tx.error);
         tx.onabort = () => reject(tx.error);
       });
-
       db.close();
       return;
     } catch (_) {}
-
-    try {
-      localStorage.setItem(FALLBACK_KEY, JSON.stringify(normalized));
-    } catch (_) {}
+    try { localStorage.setItem(FALLBACK_KEY, JSON.stringify(normalized)); } catch (_) {}
   }
 
-  els.addHandBtn.addEventListener('click', () => openHandSheet());
-  els.editPlayersBtn.addEventListener('click', openPlayersSheet);
+  addFields.concat(editFields).forEach(bindSignedConfig);
 
-  els.newGameBtn.addEventListener('click', () => {
-    openConfirmation({
-      kicker: 'Nuova partita',
-      title: 'Azzerare i punteggi?',
-      text: 'Tutte le mani della partita corrente verranno eliminate. I nomi dei giocatori resteranno invariati.',
-      buttonText: 'Azzera',
-      action: async () => {
-        state.hands = [];
-        historyIndex = 0;
-        closeSheets();
-        await persistAndRender('Nuova partita pronta');
-      }
-    });
-  });
+  els.addHandBtn.addEventListener('click', openAddHand);
+  els.handBackBtn.addEventListener('click', () => showView('home'));
+  els.cancelAddHandBtn.addEventListener('click', () => showView('home'));
+  els.openHistoryBtn.addEventListener('click', () => showView('history'));
+  els.historyBackBtn.addEventListener('click', () => showView('home'));
+  $$('[data-edit-players]').forEach((button) => button.addEventListener('click', openPlayers));
 
-  els.sheetScrim.addEventListener('click', closeSheets);
-
-  $$('[data-close-sheet]').forEach((button) => {
-    button.addEventListener('click', closeSheets);
-  });
-
-  signedFields.forEach(([input, toggle]) => {
-    toggle.setAttribute('aria-pressed', 'false');
-
-    toggle.addEventListener('click', () => toggleSign(toggle));
-
-    input.addEventListener('input', () => {
-      sanitizeMagnitudeInput(input);
-      updateHandPreview();
-    });
-
-    input.addEventListener('focus', () => {
-      requestAnimationFrame(() => input.select());
-    });
-  });
-
-  els.handForm.addEventListener('submit', async (event) => {
+  els.addHandForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-
-    const hand = {
-      baseA: readSignedField(els.baseA, els.signBaseA),
-      cardsA: readSignedField(els.cardsA, els.signCardsA),
-      baseB: readSignedField(els.baseB, els.signBaseB),
-      cardsB: readSignedField(els.cardsB, els.signCardsB)
-    };
-
-    if (editingIndex === null) {
-      state.hands.push(hand);
-      historyIndex = state.hands.length - 1;
-      closeSheets();
-      await persistAndRender('Mano aggiunta');
-    } else {
-      state.hands[editingIndex] = hand;
-      closeSheets();
-      await persistAndRender('Mano aggiornata');
-    }
-
-    editingIndex = null;
+    state.hands.push({
+      baseA: readField(addFields[0]),
+      cardsA: readField(addFields[1]),
+      baseB: readField(addFields[2]),
+      cardsB: readField(addFields[3])
+    });
+    await persistAndRender('Mano aggiunta');
+    showView('home');
   });
 
   els.playersForm.addEventListener('submit', async (event) => {
     event.preventDefault();
-
     state.players = {
       a1: cleanName(els.playerA1.value),
       a2: cleanName(els.playerA2.value),
       b1: cleanName(els.playerB1.value),
       b2: cleanName(els.playerB2.value)
     };
-
-    closeSheets();
+    closeModal();
     await persistAndRender('Giocatori aggiornati');
   });
 
   els.historyList.addEventListener('click', (event) => {
-    const editButton = event.target.closest('[data-edit-hand]');
-
-    if (editButton) {
-      openHandSheet(Number(editButton.dataset.editHand));
-      return;
-    }
-
-    const deleteButton = event.target.closest('[data-delete-hand]');
-
-    if (deleteButton) {
-      const index = Number(deleteButton.dataset.deleteHand);
-      if (!Number.isInteger(index) || !state.hands[index]) return;
-
-      openConfirmation({
-        kicker: 'Elimina mano',
-        title: `Eliminare la mano ${index + 1}?`,
-        text: 'Il punteggio totale verrà ricalcolato automaticamente.',
-        buttonText: 'Elimina',
-        action: async () => {
-          state.hands.splice(index, 1);
-          historyIndex = Math.max(0, Math.min(index - 1, state.hands.length - 1));
-          closeSheets();
-          await persistAndRender('Mano eliminata');
-        }
-      });
-    }
+    const row = event.target.closest('[data-edit-hand]');
+    if (row) openEditHand(Number(row.dataset.editHand));
   });
 
-  els.historyList.addEventListener('touchend', (event) => {
-    if (
-      historySwipeStartY === null ||
-      historySwipeStartX === null ||
-      !event.changedTouches.length
-    ) return;
+  els.editHandForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!Number.isInteger(editingIndex) || !state.hands[editingIndex]) return;
+    state.hands[editingIndex] = {
+      baseA: readField(editFields[0]),
+      cardsA: readField(editFields[1]),
+      baseB: readField(editFields[2]),
+      cardsB: readField(editFields[3])
+    };
+    closeModal();
+    editingIndex = null;
+    await persistAndRender('Mano aggiornata');
+  });
 
-    const endY = event.changedTouches[0].clientY;
-    const endX = event.changedTouches[0].clientX;
-    const deltaY = endY - historySwipeStartY;
-    const deltaX = endX - historySwipeStartX;
-
-    historySwipeStartY = null;
-    historySwipeStartX = null;
-
-    if (Math.abs(deltaY) < 28 || Math.abs(deltaY) <= Math.abs(deltaX)) return;
-
-    moveHistory(deltaY < 0 ? 1 : -1);
-  }, { passive: true });
-
-  els.historyList.addEventListener('scroll', () => {
-    if (state.hands.length <= 1) return;
-
-    clearTimeout(historyScrollTimer);
-
-    historyScrollTimer = setTimeout(() => {
-      const pages = [...els.historyList.querySelectorAll('.history-page')];
-      if (!pages.length) return;
-
-      const top = els.historyList.scrollTop;
-      let nearestIndex = historyIndex;
-      let nearestDistance = Infinity;
-
-      pages.forEach((page, index) => {
-        const distance = Math.abs(page.offsetTop - top);
-        if (distance < nearestDistance) {
-          nearestDistance = distance;
-          nearestIndex = index;
-        }
-      });
-
-      if (nearestIndex !== historyIndex) {
-        historyIndex = nearestIndex;
-        renderHistory();
+  els.deleteHandBtn.addEventListener('click', () => {
+    const index = editingIndex;
+    if (!Number.isInteger(index) || !state.hands[index]) return;
+    openConfirmation({
+      title: `Eliminare la mano ${index + 1}?`,
+      text: 'Il punteggio totale verrà ricalcolato automaticamente.',
+      buttonText: 'Elimina',
+      action: async () => {
+        state.hands.splice(index, 1);
+        editingIndex = null;
+        closeModal();
+        await persistAndRender('Mano eliminata');
       }
-    }, 70);
-  }, { passive: true });
+    });
+  });
 
+  els.newGameBtn.addEventListener('click', () => {
+    openConfirmation({
+      title: 'Nuova partita?',
+      text: 'Tutte le mani della partita corrente verranno eliminate. I nomi dei giocatori resteranno invariati.',
+      buttonText: 'Azzera',
+      action: async () => {
+        state.hands = [];
+        closeModal();
+        await persistAndRender('Nuova partita pronta');
+        showView('home');
+      }
+    });
+  });
+
+  els.modalScrim.addEventListener('click', closeModal);
+  $$('[data-close-modal]').forEach((button) => button.addEventListener('click', closeModal));
   els.confirmDangerBtn.addEventListener('click', async () => {
     const action = confirmAction;
     if (typeof action === 'function') await action();
   });
 
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && !els.sheetLayer.hidden) closeSheets();
+    if (event.key === 'Escape' && !els.modalLayer.hidden) closeModal();
   });
-
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') saveState(state);
-  });
-
-  window.addEventListener('pagehide', () => {
-    saveState(state);
-  });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveState(state); });
+  window.addEventListener('pagehide', () => saveState(state));
 
   async function init() {
     state = await loadState();
-    render();
-
+    renderAll();
+    showView('home');
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
-      }, { once: true });
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}), { once: true });
     }
   }
 

@@ -5,222 +5,251 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
   <meta name="color-scheme" content="light">
-  <meta name="description" content="Counter Burraco: segnapunti rapido, installabile e disponibile offline.">
+  <meta name="description" content="BooScore!: il segnapunti Burraco rapido, giocoso e disponibile offline.">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Counter Burraco">
+  <meta name="apple-mobile-web-app-title" content="BooScore!">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   <meta name="format-detection" content="telephone=no">
-  <title>Counter Burraco</title>
+  <title>BooScore!</title>
 
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" href="./apple-touch-icon.png">
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css?v=bottom-fullbleed-1">
+  <link rel="stylesheet" href="./styles.css?v=booscore-1">
 </head>
-
 <body>
+  <svg class="svg-defs" aria-hidden="true" width="0" height="0">
+    <symbol id="mascot-spade" viewBox="0 0 100 100">
+      <path class="limb" fill="none" stroke="#0d1737" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" d="M28 52C15 54 12 44 14 37M72 52c13 2 16-8 14-15M42 78l-8 13M58 78l8 13"/>
+      <path class="body" fill="currentColor" d="M50 8C43 22 19 31 19 50c0 15 11 25 24 25 4 0 7-1 10-3-1 8-4 13-9 18h12c-5-5-8-10-9-18 3 2 6 3 10 3 13 0 24-10 24-25C81 31 57 22 50 8Z"/>
+      <circle class="eye" fill="#0d1737" cx="41" cy="50" r="3.3"/><circle class="eye" fill="#0d1737" cx="59" cy="50" r="3.3"/>
+      <path class="face" fill="none" stroke="#0d1737" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" d="M43 59c4 5 10 5 14 0"/>
+      <path class="foot" fill="none" stroke="#0d1737" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" d="M28 92h12M60 92h12"/>
+    </symbol>
+    <symbol id="mascot-heart" viewBox="0 0 100 100">
+      <path class="limb" fill="none" stroke="#0d1737" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" d="M26 48C13 46 12 36 17 30M74 48c13-2 14-12 9-18M42 76l-8 15M58 76l8 15"/>
+      <path class="body" fill="currentColor" d="M50 80 20 51C4 35 13 12 31 12c10 0 16 6 19 13 3-7 9-13 19-13 18 0 27 23 11 39L50 80Z"/>
+      <circle class="eye" fill="#0d1737" cx="41" cy="43" r="3.3"/><path class="face" fill="none" stroke="#0d1737" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" d="M57 40c5 1 6 6 1 9M43 55c4 5 10 5 14 0"/>
+      <path class="foot" fill="none" stroke="#0d1737" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" d="M28 92h12M60 92h12"/>
+    </symbol>
+    <symbol id="mascot-club" viewBox="0 0 100 100">
+      <path class="limb" fill="none" stroke="#0d1737" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" d="M23 53C12 56 9 47 12 39M77 53c11 3 14-6 11-14M43 78l-8 13M57 78l8 13"/>
+      <path class="body" fill="currentColor" d="M50 12a17 17 0 0 1 15 25 18 18 0 1 1 8 34c-8 0-14-4-18-10 1 10 5 19 11 27H34c6-8 10-17 11-27-4 6-10 10-18 10a18 18 0 1 1 8-34A17 17 0 0 1 50 12Z"/>
+      <circle class="eye" fill="#0d1737" cx="42" cy="50" r="3.3"/><circle class="eye" fill="#0d1737" cx="58" cy="50" r="3.3"/>
+      <path class="face" fill="none" stroke="#0d1737" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" d="M43 59c4 5 10 5 14 0"/>
+      <path class="foot" fill="none" stroke="#0d1737" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" d="M28 92h12M60 92h12"/>
+    </symbol>
+    <symbol id="mascot-diamond" viewBox="0 0 100 100">
+      <path class="limb" fill="none" stroke="#0d1737" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" d="M22 50C12 48 10 39 14 33M78 50c10-2 12-11 8-17M42 77l-8 14M58 77l8 14"/>
+      <path class="body" fill="currentColor" d="M50 9 80 49 50 82 20 49 50 9Z"/>
+      <circle class="eye" fill="#0d1737" cx="41" cy="48" r="3.3"/><path class="face" fill="none" stroke="#0d1737" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" d="M57 45c5 1 6 6 1 9M43 58c4 5 10 5 14 0"/>
+      <path class="foot" fill="none" stroke="#0d1737" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round" d="M28 92h12M60 92h12"/>
+    </symbol>
+  </svg>
+
   <main class="app" id="app">
-    <header class="topbar">
-      <div class="status">
-        <span class="spark" aria-hidden="true"></span>
-        <span>Partita in corso</span>
-        <span class="spark spark--small" aria-hidden="true"></span>
-      </div>
-    </header>
+    <section class="view view--home is-active" id="homeView" aria-label="Partita in corso">
+      <header class="home-header">
+        <div class="brand" aria-label="BooScore!">Boo<span>Score!</span></div>
+        <div class="status-label"><i></i><b>Partita in corso</b><i></i></div>
+      </header>
 
-    <section class="teams" aria-label="Squadre">
-      <article class="team">
-        <span class="team-chip team-chip--one">Squadra 1</span>
-        <div class="team-names" aria-label="Giocatori squadra 1">
-          <span id="playerNameA1">Matteo</span>
-          <span id="playerNameA2">Alessio</span>
-        </div>
-      </article>
-
-      <span class="vs" aria-hidden="true">VS</span>
-
-      <article class="team">
-        <span class="team-chip team-chip--two">Squadra 2</span>
-        <div class="team-names" aria-label="Giocatori squadra 2">
-          <span id="playerNameB1">Martina</span>
-          <span id="playerNameB2">Giulia</span>
-        </div>
-      </article>
-    </section>
-
-    <button class="text-action" id="editPlayersBtn" type="button">
-      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 20h4l10.7-10.7-4-4L4 16v4Zm2-3.2 8.7-8.7 1.2 1.2L7.2 18H6v-1.2ZM17.8 6.2l-1.2-1.2.9-.9a1.4 1.4 0 0 1 2 0l.4.4a1.4 1.4 0 0 1 0 2l-.9.9-1.2-1.2Z"/></svg>
-      Modifica giocatori
-    </button>
-
-    <section class="scoreboard" aria-label="Punteggio">
-      <div class="score-side" id="scoreSideA">
-        <div class="score" id="scoreA">0</div>
-      </div>
-
-      <div class="score-divider" aria-hidden="true">
-        <span></span>
-        <i></i>
-        <span></span>
-      </div>
-
-      <div class="score-side" id="scoreSideB">
-        <div class="score" id="scoreB">0</div>
-      </div>
-    </section>
-
-    <p class="lead" id="leadText" aria-live="polite">Partita in parità</p>
-
-    <button class="primary-cta" id="addHandBtn" type="button">
-      <span class="plus" aria-hidden="true">+</span>
-      <span>Aggiungi mano</span>
-    </button>
-
-    <section class="history">
-      <div class="section-heading">
-        <span class="section-kicker">Storico mani</span>
-        <span class="hand-count" id="handCount">0 giocate</span>
-      </div>
-
-      <div class="history-card">
-        <div class="history-head" aria-hidden="true">
-          <span>#</span>
-          <span>Squadra 1</span>
-          <span>Squadra 2</span>
-          <span></span>
-        </div>
-        <div id="historyList" class="history-list">
-          <div class="empty-state">
-            <div class="empty-symbol" aria-hidden="true">
-              <span></span><span></span><span></span><span></span>
-            </div>
-            <p>Nessuna mano inserita.</p>
+      <section class="matchup" aria-label="Squadre e giocatori">
+        <article class="team-card team-card--one">
+          <button class="edit-team-btn" type="button" data-edit-players aria-label="Modifica giocatori">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17.3V21h3.7L18.6 10.1l-3.7-3.7L4 17.3Zm2 1.2 8.9-8.9 1 1-8.9 8.9H6v-1Zm13.7-11.2a1 1 0 0 0 0-1.4l-1.6-1.6a1 1 0 0 0-1.4 0l-1 1 3.7 3.7 1-1Z"/></svg>
+          </button>
+          <span class="team-chip team-chip--one">Squadra 1</span>
+          <div class="team-names"><span id="playerNameA1">Matteo</span><span id="playerNameA2">Alessio</span></div>
+          <div class="team-mascots" aria-hidden="true">
+            <svg class="mascot mascot--spade"><use href="#mascot-spade"/></svg>
+            <svg class="mascot mascot--heart"><use href="#mascot-heart"/></svg>
           </div>
+        </article>
+
+        <span class="vs-badge" aria-hidden="true">VS</span>
+
+        <article class="team-card team-card--two">
+          <button class="edit-team-btn" type="button" data-edit-players aria-label="Modifica giocatori">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17.3V21h3.7L18.6 10.1l-3.7-3.7L4 17.3Zm2 1.2 8.9-8.9 1 1-8.9 8.9H6v-1Zm13.7-11.2a1 1 0 0 0 0-1.4l-1.6-1.6a1 1 0 0 0-1.4 0l-1 1 3.7 3.7 1-1Z"/></svg>
+          </button>
+          <span class="team-chip team-chip--two">Squadra 2</span>
+          <div class="team-names"><span id="playerNameB1">Martina</span><span id="playerNameB2">Giulia</span></div>
+          <div class="team-mascots" aria-hidden="true">
+            <svg class="mascot mascot--club"><use href="#mascot-club"/></svg>
+            <svg class="mascot mascot--diamond"><use href="#mascot-diamond"/></svg>
+          </div>
+        </article>
+      </section>
+
+      <section class="scoreboard" aria-label="Punteggio totale">
+        <div class="score-card score-card--one" id="scoreSideA"><strong class="score" id="scoreA">0</strong></div>
+        <div class="score-card score-card--two" id="scoreSideB"><strong class="score" id="scoreB">0</strong></div>
+      </section>
+
+      <p class="lead-pill" id="leadText" aria-live="polite"><span class="lead-dot"></span>Partita in parità</p>
+
+      <button class="primary-cta" id="addHandBtn" type="button"><span class="cta-icon" aria-hidden="true">+</span><span>Aggiungi mano</span></button>
+
+      <section class="history-preview">
+        <div class="section-heading"><span>Storico mani</span><small id="homeHandCount">0 giocate</small></div>
+        <div class="history-preview-card">
+          <div class="last-hand-preview">
+            <span class="preview-icon" aria-hidden="true">◴</span>
+            <div><b>Ultima mano</b><span id="homeLastHand">Nessuna mano giocata</span></div>
+          </div>
+          <button class="history-link" id="openHistoryBtn" type="button">
+            <span class="cards-mini" aria-hidden="true">▰</span><span>Vai alla cronologia</span><b aria-hidden="true">›</b>
+          </button>
         </div>
-      </div>
+      </section>
+
+      <button class="new-game" id="newGameBtn" type="button">Nuova partita</button>
     </section>
 
-    <button class="new-game" id="newGameBtn" type="button">
-      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 1-7.4 4.9l1.9.7A6 6 0 1 0 8 7.2V10H6V4h6v2H9.4A8 8 0 0 1 12 4Z"/></svg>
-      Nuova partita
-    </button>
+    <section class="view view--hand" id="handView" aria-label="Aggiungi mano" hidden>
+      <header class="page-header">
+        <button class="back-btn" id="handBackBtn" type="button" aria-label="Torna alla partita">‹</button>
+        <h1>Aggiungi mano</h1>
+        <span class="header-spacer"></span>
+      </header>
+
+      <div class="mascot-hero" aria-hidden="true">
+        <svg class="mascot mascot--spade"><use href="#mascot-spade"/></svg>
+        <svg class="mascot mascot--heart"><use href="#mascot-heart"/></svg>
+        <svg class="mascot mascot--club"><use href="#mascot-club"/></svg>
+        <svg class="mascot mascot--diamond"><use href="#mascot-diamond"/></svg>
+      </div>
+
+      <form id="addHandForm" class="add-hand-form">
+        <article class="entry-card entry-card--one">
+          <h2>Squadra 1</h2>
+          <div class="entry-fields">
+            <label>Base
+              <span class="signed-field">
+                <button type="button" class="sign-choice" id="addBaseAMinus" aria-label="Imposta Base Squadra 1 negativa">−</button>
+                <input id="addBaseA" inputmode="numeric" pattern="[0-9]*" value="0" maxlength="4" autocomplete="off">
+                <button type="button" class="sign-choice is-active" id="addBaseAPlus" aria-label="Imposta Base Squadra 1 positiva">+</button>
+              </span>
+            </label>
+            <label>Carte
+              <span class="signed-field">
+                <button type="button" class="sign-choice" id="addCardsAMinus" aria-label="Imposta Carte Squadra 1 negative">−</button>
+                <input id="addCardsA" inputmode="numeric" pattern="[0-9]*" value="0" maxlength="4" autocomplete="off">
+                <button type="button" class="sign-choice is-active" id="addCardsAPlus" aria-label="Imposta Carte Squadra 1 positive">+</button>
+              </span>
+            </label>
+          </div>
+        </article>
+
+        <article class="entry-card entry-card--two">
+          <h2>Squadra 2</h2>
+          <div class="entry-fields">
+            <label>Base
+              <span class="signed-field">
+                <button type="button" class="sign-choice" id="addBaseBMinus" aria-label="Imposta Base Squadra 2 negativa">−</button>
+                <input id="addBaseB" inputmode="numeric" pattern="[0-9]*" value="0" maxlength="4" autocomplete="off">
+                <button type="button" class="sign-choice is-active" id="addBaseBPlus" aria-label="Imposta Base Squadra 2 positiva">+</button>
+              </span>
+            </label>
+            <label>Carte
+              <span class="signed-field">
+                <button type="button" class="sign-choice" id="addCardsBMinus" aria-label="Imposta Carte Squadra 2 negative">−</button>
+                <input id="addCardsB" inputmode="numeric" pattern="[0-9]*" value="0" maxlength="4" autocomplete="off">
+                <button type="button" class="sign-choice is-active" id="addCardsBPlus" aria-label="Imposta Carte Squadra 2 positive">+</button>
+              </span>
+            </label>
+          </div>
+        </article>
+
+        <div class="info-box"><span aria-hidden="true">i</span><p>Inserisci i punti <b>BASE</b> e le <b>CARTE</b> prese per entrambe le squadre.</p></div>
+
+        <div class="hand-actions">
+          <button class="primary-cta save-hand" type="submit"><span class="cta-icon cta-check" aria-hidden="true">✓</span><span>Salva mano</span></button>
+          <button class="text-cancel" id="cancelAddHandBtn" type="button">Annulla</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="view view--history" id="historyView" aria-label="Cronologia mani" hidden>
+      <header class="page-header history-header">
+        <button class="back-btn" id="historyBackBtn" type="button" aria-label="Torna alla partita">‹</button>
+        <h1>Cronologia mani</h1>
+        <span class="header-spacer"></span>
+      </header>
+
+      <div class="history-mascots" aria-hidden="true">
+        <svg class="mascot mascot--spade"><use href="#mascot-spade"/></svg>
+        <svg class="mascot mascot--heart"><use href="#mascot-heart"/></svg>
+        <svg class="mascot mascot--club"><use href="#mascot-club"/></svg>
+        <svg class="mascot mascot--diamond"><use href="#mascot-diamond"/></svg>
+      </div>
+
+      <section class="history-summary">
+        <span class="summary-kicker">Riepilogo partita</span>
+        <div class="summary-scores">
+          <article class="summary-score summary-score--one"><span>Squadra 1</span><strong id="historyScoreA">0</strong><small>punti totali</small></article>
+          <article class="summary-score summary-score--two"><span>Squadra 2</span><strong id="historyScoreB">0</strong><small>punti totali</small></article>
+        </div>
+        <div class="summary-report">
+          <div><span class="report-icon" aria-hidden="true">▣</span><p><b>Ultima mano</b><small id="historyLastHand">Nessuna mano giocata</small></p></div>
+          <div><span class="report-icon" aria-hidden="true">♙</span><p><b>Mani giocate</b><small id="historyHandCount">0</small></p></div>
+        </div>
+      </section>
+
+      <section class="hands-panel">
+        <span class="summary-kicker">Elenco mani giocate</span>
+        <div class="hands-table-head" aria-hidden="true"><span>#</span><span><i class="dot dot--one"></i>Squadra 1</span><span><i class="dot dot--two"></i>Squadra 2</span><span></span></div>
+        <div class="hands-scroll" id="historyList">
+          <div class="history-empty">Nessuna mano giocata</div>
+        </div>
+      </section>
+    </section>
   </main>
 
-  <div class="sheet-layer" id="sheetLayer" hidden>
-    <button class="sheet-scrim" id="sheetScrim" type="button" aria-label="Chiudi pannello"></button>
+  <div class="modal-layer" id="modalLayer" hidden>
+    <button class="modal-scrim" id="modalScrim" type="button" aria-label="Chiudi finestra"></button>
 
-    <section class="sheet" id="handSheet" role="dialog" aria-modal="true" aria-labelledby="handSheetTitle" hidden>
-      <div class="sheet-handle" aria-hidden="true"></div>
-
-      <div class="sheet-title-row">
-        <div>
-          <span class="sheet-kicker">Punteggio</span>
-          <h2 id="handSheetTitle">Nuova mano</h2>
-        </div>
-        <button class="close-btn" type="button" data-close-sheet aria-label="Chiudi">×</button>
-      </div>
-
-      <form id="handForm">
-        <div class="hand-grid">
-          <div></div>
-
-          <div class="hand-team-label hand-team-label--one">
-            <b>Squadra 1</b>
-            <span id="sheetTeamA1">Matteo</span>
-            <span id="sheetTeamA2">Alessio</span>
-          </div>
-
-          <div class="hand-team-label hand-team-label--two">
-            <b>Squadra 2</b>
-            <span id="sheetTeamB1">Martina</span>
-            <span id="sheetTeamB2">Giulia</span>
-          </div>
-
-          <label class="field-label" for="baseA">Base</label>
-          <div class="signed-field">
-            <button class="sign-toggle sign-toggle--one" type="button" id="signBaseA" data-sign="1" aria-label="Cambia segno Base squadra 1">+</button>
-            <input id="baseA" name="baseA" type="text" inputmode="numeric" pattern="[0-9]*" value="0" autocomplete="off">
-          </div>
-          <div class="signed-field">
-            <button class="sign-toggle sign-toggle--two" type="button" id="signBaseB" data-sign="1" aria-label="Cambia segno Base squadra 2">+</button>
-            <input id="baseB" name="baseB" type="text" inputmode="numeric" pattern="[0-9]*" value="0" autocomplete="off">
-          </div>
-
-          <label class="field-label" for="cardsA">Carte</label>
-          <div class="signed-field">
-            <button class="sign-toggle sign-toggle--one" type="button" id="signCardsA" data-sign="1" aria-label="Cambia segno Carte squadra 1">+</button>
-            <input id="cardsA" name="cardsA" type="text" inputmode="numeric" pattern="[0-9]*" value="0" autocomplete="off">
-          </div>
-          <div class="signed-field">
-            <button class="sign-toggle sign-toggle--two" type="button" id="signCardsB" data-sign="1" aria-label="Cambia segno Carte squadra 2">+</button>
-            <input id="cardsB" name="cardsB" type="text" inputmode="numeric" pattern="[0-9]*" value="0" autocomplete="off">
-          </div>
-
-          <span class="field-label field-label--total">Mano</span>
-          <output class="hand-total hand-total--one" id="handTotalA">0</output>
-          <output class="hand-total hand-total--two" id="handTotalB">0</output>
-        </div>
-
-        <p class="negative-hint">Tocca <strong>+</strong> accanto a un valore per trasformarlo in <strong>−</strong>.</p>
-
-        <div class="sheet-actions">
-          <button class="secondary-btn" type="button" data-close-sheet>Annulla</button>
-          <button class="confirm-btn" id="confirmHandBtn" type="submit">Conferma mano</button>
-        </div>
-      </form>
-    </section>
-
-    <section class="sheet sheet--compact" id="playersSheet" role="dialog" aria-modal="true" aria-labelledby="playersTitle" hidden>
-      <div class="sheet-handle" aria-hidden="true"></div>
-
-      <div class="sheet-title-row">
-        <div>
-          <span class="sheet-kicker">Squadre</span>
-          <h2 id="playersTitle">Modifica giocatori</h2>
-        </div>
-        <button class="close-btn" type="button" data-close-sheet aria-label="Chiudi">×</button>
-      </div>
-
+    <section class="bottom-sheet players-sheet" id="playersSheet" role="dialog" aria-modal="true" aria-labelledby="playersTitle" hidden>
+      <header class="sheet-header"><h2 id="playersTitle">Modifica giocatori</h2><button type="button" class="sheet-close" data-close-modal aria-label="Chiudi">×</button></header>
       <form id="playersForm">
         <div class="players-grid">
-          <fieldset>
-            <legend><span class="team-dot team-dot--one"></span>Squadra 1</legend>
-            <label>Giocatore 1<input id="playerA1" maxlength="24" autocomplete="off"></label>
-            <label>Giocatore 2<input id="playerA2" maxlength="24" autocomplete="off"></label>
-          </fieldset>
-
-          <fieldset>
-            <legend><span class="team-dot team-dot--two"></span>Squadra 2</legend>
-            <label>Giocatore 1<input id="playerB1" maxlength="24" autocomplete="off"></label>
-            <label>Giocatore 2<input id="playerB2" maxlength="24" autocomplete="off"></label>
-          </fieldset>
+          <fieldset><legend>Squadra 1</legend><label>Giocatore 1<input id="playerA1" maxlength="24" autocomplete="off"></label><label>Giocatore 2<input id="playerA2" maxlength="24" autocomplete="off"></label></fieldset>
+          <fieldset><legend>Squadra 2</legend><label>Giocatore 1<input id="playerB1" maxlength="24" autocomplete="off"></label><label>Giocatore 2<input id="playerB2" maxlength="24" autocomplete="off"></label></fieldset>
         </div>
-
-        <div class="sheet-actions">
-          <button class="secondary-btn" type="button" data-close-sheet>Annulla</button>
-          <button class="confirm-btn" type="submit">Salva nomi</button>
-        </div>
+        <div class="modal-actions"><button type="button" class="secondary-btn" data-close-modal>Annulla</button><button type="submit" class="modal-primary">Salva nomi</button></div>
       </form>
     </section>
 
-    <section class="sheet sheet--compact" id="confirmSheet" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" hidden>
-      <div class="sheet-handle" aria-hidden="true"></div>
+    <section class="bottom-sheet edit-sheet" id="editHandSheet" role="dialog" aria-modal="true" aria-labelledby="editHandTitle" hidden>
+      <header class="sheet-header edit-sheet-header"><h2 id="editHandTitle">Modifica mano</h2><button type="button" class="sheet-close" data-close-modal aria-label="Chiudi">×</button></header>
+      <form id="editHandForm" class="edit-hand-form">
+        <div class="edit-team-grid">
+          <article class="edit-team-card edit-team-card--one">
+            <h3>Squadra 1</h3>
+            <label>Base<span class="signed-field signed-field--edit"><button type="button" class="sign-choice" id="editBaseAMinus">−</button><input id="editBaseA" inputmode="numeric" pattern="[0-9]*" value="0" maxlength="4"><button type="button" class="sign-choice is-active" id="editBaseAPlus">+</button></span></label>
+            <label>Carte<span class="signed-field signed-field--edit"><button type="button" class="sign-choice" id="editCardsAMinus">−</button><input id="editCardsA" inputmode="numeric" pattern="[0-9]*" value="0" maxlength="4"><button type="button" class="sign-choice is-active" id="editCardsAPlus">+</button></span></label>
+          </article>
+          <article class="edit-team-card edit-team-card--two">
+            <h3>Squadra 2</h3>
+            <label>Base<span class="signed-field signed-field--edit"><button type="button" class="sign-choice" id="editBaseBMinus">−</button><input id="editBaseB" inputmode="numeric" pattern="[0-9]*" value="0" maxlength="4"><button type="button" class="sign-choice is-active" id="editBaseBPlus">+</button></span></label>
+            <label>Carte<span class="signed-field signed-field--edit"><button type="button" class="sign-choice" id="editCardsBMinus">−</button><input id="editCardsB" inputmode="numeric" pattern="[0-9]*" value="0" maxlength="4"><button type="button" class="sign-choice is-active" id="editCardsBPlus">+</button></span></label>
+          </article>
+        </div>
+        <div class="info-box edit-info"><span aria-hidden="true">i</span><p>Modifica i punti base e le carte della mano selezionata.</p></div>
+        <button class="primary-cta edit-save" type="submit"><span class="cta-icon cta-check" aria-hidden="true">✓</span><span>Salva modifiche</span></button>
+        <button class="delete-hand" id="deleteHandBtn" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 3h8l1 2h4v2H3V5h4l1-2Zm-2 6h12l-1 12H7L6 9Zm3 2 .5 8h1L10 11H9Zm5 0-.5 8h1L15 11h-1Z"/></svg>Elimina mano</button>
+      </form>
+    </section>
 
-      <div class="confirm-copy">
-        <span class="sheet-kicker" id="confirmKicker">Conferma</span>
-        <h2 id="confirmTitle">Nuova partita?</h2>
-        <p id="confirmText">I punteggi e le mani della partita corrente verranno azzerati.</p>
-      </div>
-
-      <div class="sheet-actions">
-        <button class="secondary-btn" type="button" data-close-sheet>Annulla</button>
-        <button class="danger-btn" id="confirmDangerBtn" type="button">Azzera</button>
-      </div>
+    <section class="bottom-sheet confirm-sheet" id="confirmSheet" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" hidden>
+      <header class="sheet-header"><h2 id="confirmTitle">Conferma</h2><button type="button" class="sheet-close" data-close-modal aria-label="Chiudi">×</button></header>
+      <p id="confirmText"></p>
+      <div class="modal-actions"><button type="button" class="secondary-btn" data-close-modal>Annulla</button><button type="button" class="danger-btn" id="confirmDangerBtn">Conferma</button></div>
     </section>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-
-  <script src="./app.js" defer></script>
+  <script src="./app.js?v=booscore-1" defer></script>
 </body>
 </html>
